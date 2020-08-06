@@ -1,3 +1,5 @@
+![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+
 # 导读
 
 本文是大数据的导航页，记录自己的成长历程，主要从以下几方面介绍：
@@ -35,11 +37,13 @@
 
 ## 2 大数据框架篇
 
-| `Hadoop` | `Hive` | `Spark` | `Flink` | `HBase` | `Kafka` | `Zookeeper` | `Flume` |
-| -------- | ------ | ------- | ------- | ------- | ------- | ----------- | ------- |
-|          |        |         |         |         |         |             |         |
+| `Hadoop`                          | `Hive` | `Spark` | `Flink` | `HBase` | `Kafka` | `Zookeeper` | `Flume` |
+| :-------------------------------- | ------ | ------- | ------- | ------- | ------- | ----------- | :------ |
+| [Hadoop](./docs/Hadoop/Hadoop.md) |        |         |         |         |         |             |         |
 
+![Hadoop](https://gitee.com/struggle3014/picBed/raw/master/Hadoop.png)
 
+<div align="center"><font size="2"><a href="./docs/MindMapping/Hadoop.xmind">Hadoop思维导图</a></font></div>
 
 ## 3 大数据实战篇
 
@@ -88,12 +92,6 @@
 | 大数据                         | 文档 | `GitHub`       | [heibaiying](https://github.com/heibaiying/BigData-Notes)    | 大数据入门指南                                               |
 |                                | 文档 | `GitHub`       | [wangzhiwubigdata](https://github.com/wangzhiwubigdata/God-Of-BigData) | 大数据入门                                                   |
 | 大数据                         | 书籍 | 阿里云         | [阿里巴巴大数据核心技术](https://developer.aliyun.com/article/745632?utm_content=g_1000104836&tt_from=weixin&utm_source=weixin&utm_medium=toutiao_ios&utm_campaign=client_share&wxshare_count=1&from=singlemessage&isappinstalled=0) | 《大数据工程师必读手册》<br>《阿里巴巴大数据及AI实战》<br>《领军行业大数据及AI实战》 |
-
-
-
-## 
-
-
 
 
 
