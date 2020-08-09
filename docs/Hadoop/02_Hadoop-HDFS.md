@@ -1,12 +1,33 @@
 ![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
 
-# Hadoop HDFS
-
-## 导读
+# 导读
 
 Hadoop HDFS 围绕 What, Why, How 展开
 
+# 目录
 
+<nav>
+<a href='#导读' style='text-decoration:none;font-weight:bolder'>导读</a><br/>
+<a href='#目录' style='text-decoration:none;font-weight:bolder'>目录</a><br/>
+<a href='#正文' style='text-decoration:none;font-weight:bolder'>正文</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#Hadoop 项目中 HDFS 存在的意义' style='text-decoration:none;${border-style}'>Hadoop 项目中 HDFS 存在的意义</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#理论知识点' style='text-decoration:none;${border-style}'>理论知识点</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#存储模型' style='text-decoration:none;${border-style}'>存储模型</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#架构设计' style='text-decoration:none;${border-style}'>架构设计</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#角色功能' style='text-decoration:none;${border-style}'>角色功能</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#元数据持久化' style='text-decoration:none;${border-style}'>元数据持久化</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#安全模式' style='text-decoration:none;${border-style}'>安全模式</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#副本放置策略' style='text-decoration:none;${border-style}'>副本放置策略</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#读写流程' style='text-decoration:none;${border-style}'>读写流程</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#HDFS HA' style='text-decoration:none;${border-style}'>HDFS HA</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#HDFS 架构优缺点剖析' style='text-decoration:none;${border-style}'>HDFS 架构优缺点剖析</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#HDFS-HA 解决方案' style='text-decoration:none;${border-style}'>HDFS-HA 解决方案</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#HDFS-Federation 解决方案' style='text-decoration:none;${border-style}'>HDFS-Federation 解决方案</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#HDFS 权限管理' style='text-decoration:none;${border-style}'>HDFS 权限管理</a><br/>
+<a href='#参考文献' style='text-decoration:none;font-weight:bolder'>参考文献</a><br/>
+</nav>
+
+# 正文
 
 ## Hadoop 项目中 HDFS 存在的意义
 
@@ -349,4 +370,8 @@ NN 的压力过大，内存首先问题：
 
 
 ## HDFS 权限管理
+
+
+
+# 参考文献
 

@@ -1,4 +1,27 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)#
+
+
+
+# 导读
+
+本文介绍 Hadoop 安装部署具体内容。
+
+# 目录
+
+<nav>
+<a href='#导读' style='text-decoration:none;font-weight:bolder'>导读</a><br/>
+<a href='#目录' style='text-decoration:none;font-weight:bolder'>目录</a><br/>
+<a href='#正文' style='text-decoration:none;font-weight:bolder'>正文</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#基础环境' style='text-decoration:none;${border-style}'>基础环境</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#应用搭建、使用及验证' style='text-decoration:none;${border-style}'>应用搭建、使用及验证</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#单节点集群' style='text-decoration:none;${border-style}'>单节点集群</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#伪分布式集群' style='text-decoration:none;${border-style}'>伪分布式集群</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#分布式集群' style='text-decoration:none;${border-style}'>分布式集群</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#HA 集群' style='text-decoration:none;${border-style}'>HA 集群</a><br/>
+<a href='#参考文献' style='text-decoration:none;font-weight:bolder'>参考文献</a><br/>
+</nav>
+
+# 正文
 
 ## 基础环境
 
@@ -254,6 +277,7 @@ cd  /var/bigdata/hadoop/local/dfs/data/current/BP-281147636-192.168.150.11-15606
 	node04:
 		cd ~/.ssh
 		cat node01.pub >> authorized_keys
+
 #### 配置 Hadoop 角色
 
 	node01:
@@ -293,6 +317,7 @@ cd  /var/bigdata/hadoop/local/dfs/data/current/BP-281147636-192.168.150.11-15606
 		格式化启动
 			hdfs namenode -format
 			start-dfs.sh
+
 #### 格式化及启动
 
 
@@ -485,4 +510,8 @@ fs.defaultFs -> hdfs://node01:9000
 ​			2节点一直阻塞降级
 ​			如果恢复1上的网卡   ifconfig eth0 up  
 ​			最终 2 变成 active
+
+
+
+# 参考文献
 

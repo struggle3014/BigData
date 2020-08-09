@@ -1,8 +1,6 @@
 ![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
 
-# Hadoop 源码分析
-
-## 导读
+# 导读
 
 源码分析不是为了能写出一个 MR 框架，而是为了更好地使用和更充分地理解框架。
 
@@ -31,6 +29,24 @@
 * 数据本地化
 
 
+
+# 目录
+
+<nav>
+<a href='#导读' style='text-decoration:none;font-weight:bolder'>导读</a><br/>
+<a href='#目录' style='text-decoration:none;font-weight:bolder'>目录</a><br/>
+<a href='#正文' style='text-decoration:none;font-weight:bolder'>正文</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#Client' style='text-decoration:none;${border-style}'>Client</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#MapTask' style='text-decoration:none;${border-style}'>MapTask</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#Input' style='text-decoration:none;${border-style}'>Input</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#Output' style='text-decoration:none;${border-style}'>Output</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#ReduceTask' style='text-decoration:none;${border-style}'>ReduceTask</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#Reducer 的文档' style='text-decoration:none;${border-style}'>Reducer 的文档</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#Reducer run 方法详解' style='text-decoration:none;${border-style}'>Reducer run 方法详解</a><br/>
+<a href='#参考文献' style='text-decoration:none;font-weight:bolder'>参考文献</a><br/>
+</nav>
+
+# 正文
 
 ## Client
 
@@ -139,9 +155,9 @@ buffer 使用的是环形缓冲区，MR 底层源码实现是 MapOutputBuffer �
 * 最终，溢写时只要按照排序的索引，卸下的文件中的数据就是有序的
 
   ​	<font color="red">注意</font>：<u>排序是二次排序（索引里有 P，排序先比较索引的 P 决定顺序，然后再比较相同的 P 中的 Key 顺序）。</u>
-  
+
   ​		<u>分区内有序：最后 reduce 是按照分区进行拉取</u>
-  
+
   ​		<u>分区内 key 有序：因为 reduce 计算时按照分组计算，分组的语义（相同的 Key 排在一起）</u>
 
 #### Output 核心流程
@@ -261,4 +277,10 @@ run():
 ​					reduce：取用户自定义的分组比较器
 
 ​			做减法：结论，框架很灵活，给了我们各种加工数据排序和分组的方式
+
+
+
+# 参考文献
+
+
 
