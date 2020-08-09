@@ -130,7 +130,7 @@ TextInputFormat -> LineRecordReader
 
 ##### 环形缓冲区
 
-![image-20200805170845549](D:\zhouyue\Study\知识点\Hadoop\笔记\upload\image-20200805170845549.png)
+![MapReduce环形缓冲区](https://gitee.com/struggle3014/picBed/raw/master/MapReduce环形缓冲区.png)
 
 <div align="center"><font size="2">MR环形缓冲区</font></div>
 
