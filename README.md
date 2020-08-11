@@ -37,13 +37,17 @@
 
 ## 2 大数据框架篇
 
-| `Hadoop`                          | `Hive` | `Spark` | `Flink` | `HBase` | `Kafka` | `Zookeeper` | `Flume` |
-| :-------------------------------- | ------ | ------- | ------- | ------- | ------- | ----------- | :------ |
-| [Hadoop](./docs/Hadoop/Hadoop.md) |        |         |         |         |         |             |         |
+| `Hadoop`                          | ``HBase`                       | `Spark` | Hive` | `Flink` | `Kafka` | `Zookeeper` | `Flume` |
+| :-------------------------------- | ------------------------------ | ------- | ----- | ------- | ------- | ----------- | :------ |
+| [Hadoop](./docs/Hadoop/Hadoop.md) | [HBase](./docs/HBase/HBase.md) |         |       |         |         |             |         |
 
 ![Hadoop](https://gitee.com/struggle3014/picBed/raw/master/Hadoop.png)
 
 <div align="center"><font size="2"><a href="./docs/MindMapping/Hadoop.xmind">Hadoop思维导图</a></font></div>
+
+![HBase](https://gitee.com/struggle3014/picBed/raw/master/HBase.png)
+
+<div align="center"><font size="2"><a href="./docs/MindMapping/HBase.xmind">HBase思维导图</a></font></div>
 
 ## 3 大数据实战篇
 
