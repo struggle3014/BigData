@@ -37,9 +37,9 @@
 
 ## 2 大数据框架篇
 
-| `Hadoop`                          | ``HBase`                       | `Spark` | Hive` | `Flink` | `Kafka` | `Zookeeper` | `Flume` |
-| :-------------------------------- | ------------------------------ | ------- | ----- | ------- | ------- | ----------- | :------ |
-| [Hadoop](./docs/Hadoop/Hadoop.md) | [HBase](./docs/HBase/HBase.md) |         |       |         |         |             |         |
+| `Hadoop`                          | `HBase`                        | `Spark` | Hive` | `Flink` | `Kafka` | `Zookeeper` | `Flume` |
+| :-------------------------------- | ------------------------------ | ------- | ------------------------------------------------- |
+| [Hadoop](./docs/Hadoop/Hadoop.md) | [HBase](./docs/HBase/HBase.md) |         |                                                   |
 
 ![Hadoop](https://gitee.com/struggle3014/picBed/raw/master/Hadoop.png)
 
