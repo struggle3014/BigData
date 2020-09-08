@@ -1,8 +1,12 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
 
 本文介绍 HBase 常用的数据结构，包括 LSM 树，跳跃表，布隆过滤器等。
+
+***持续更新中~***
+
+
 
 # 目录
 
@@ -74,6 +78,8 @@ LSM Tree，理论上，可以使内存中树的一部分和磁盘中第一层树
 
 HBase 在实现中，是把整个内存在一定阈值后，flush 到 disk 中，形成一个 file，这个 file 的存储就是一个小的 B+ 树，因为 HBase 一般是部署在 HDFS 上，HDFS 不支持对文件的 update 操作，所以 HBase 整体内存 flush，而不是和磁盘中的小树 merge update。内存 flush 到磁盘上的小树，定期也会合并成一个大树。整体上 HBase 用了 LSM Tree 的思路。
 
+
+
 ## 2 跳跃表
 
 实现 MemStore 模型的数据结构是 SkipList（跳表），跳表可以实现高效的查询，插入，删除操作，这些操作的期望复杂度都是 O(logN)。另外，跳表本质是由链表构成，理解和实现简单。这也是很多 KV 数据库（Redis，LevelDB）使用跳表实现有序数据集合的两个主要原因。
@@ -104,6 +110,8 @@ ConcurrentSkipListMap 的结构如下：
 * ConcurrentSkipListMap 的内存管理
 
 可以对两部分的内存管理进行优化。内存优化的具体内容参见：HBase内存管理之MemStore进化论<sup>[[4] ](# )</sup>
+
+
 
 ## 3 布隆过滤器
 
@@ -178,6 +186,8 @@ ConcurrentSkipListMap 的结构如下：
 #### 布隆过滤器的使用原则
 
 如果可能的话，用户尽量使用行级布隆过滤器，因为它在额外的空间开销和利用选择过滤存储文件提升之间获得了很好的平衡。只有当用户使用行级布隆过滤器没有性能提升时，再考虑使用开销更大的行加列级布隆过滤器。
+
+
 
 # 总结
 

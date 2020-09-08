@@ -1,4 +1,4 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
 
@@ -10,6 +10,10 @@
 * HBase 中更新操作以及删除实现都很简单。
   * 更新操作没有更新原有数据，而是使用时间戳属性实现了多版本。
   * 删除操作也并没有真正删除原有数据，只是插入了一条打上“deleted”标签的数据，而真正的数据删除发生在系统异步执行 Major_Compact 的时候。上述套路极大地简化了数据更新、删除流程，但对于数据查询却意味着套上了层层枷锁，读取过程需要根据版本进行过滤，同时对已经标记删除的数据也要进行过滤。
+
+***持续更新中~***
+
+
 
 # 目录
 
@@ -44,6 +48,8 @@
 ![HBase的Client-Server交互逻辑](https://gitee.com/struggle3014/picBed/raw/master/HBase的Client-Server交互逻辑.png)
 
 <div align="center"><font size="2">Client-Server交互逻辑</font></div>
+
+
 
 ## HBase 读流程
 
@@ -179,6 +185,8 @@ Scanner 体系构建的最终结果由一个 StoreFileScanner 和 MemStoreScanne
 现在假设用户查询所有版本而且该 KeyValue 检查通过，此时当前的堆顶元素需要执行 next 方法去检索下一个值，并重新组织最小堆。即图中 MemstoreScanner 将会指向 r4，重新组织最小堆之后最小堆将会变为<StoreFileScanner2, StoreFileScanner1, MemstoreScanner>，堆顶元素变为 StoreFileScanner2，得到keyvalue＝r2:cf1:name:v2:name22，进行一系列判定，再 next，再重新组织最小堆…
 
 不断重复这个过程，直至一行数据全部被检索得到。继续下一行…
+
+
 
 ## HBase 写流程
 

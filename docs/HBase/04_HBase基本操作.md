@@ -1,10 +1,15 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
+
+本文介绍 HBase 的基本操作。
+
+***持续更新中~***
 
 
 
 # 目录
+
 <nav>
 <a href='#导读' style='text-decoration:none;font-weight:bolder'>导读</a><br/>
 <a href='#目录' style='text-decoration:none;font-weight:bolder'>目录</a><br/>
@@ -34,6 +39,8 @@ hbase>version
 # 展示当前 hbase 的用户
 hbase>whoami
 ```
+
+
 
 ## 2 DDL 操作
 
@@ -72,6 +79,8 @@ hbase>locate_region
 hbase>show_filters
 ```
 
+
+
 ## 3 namespace 操作
 
 ```shell
@@ -88,6 +97,8 @@ hbase>list_namespace
 # 展示某个命名空间下所有的表
 hbase>list_namespace_tables 'my_ns'
 ```
+
+
 
 ## 4 DML 操作
 
@@ -113,6 +124,8 @@ hbase>scan 't1'
 # 清空表的所有数据
 hbase>truncate
 ```
+
+
 
 # 总结
 

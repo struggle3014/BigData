@@ -1,8 +1,12 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
 
 本文介绍 HBase 的搭建和部署。
+
+***持续更新中~***
+
+
 
 # 目录
 
@@ -97,8 +101,6 @@ JAVA_HOME=/usr/java/jdk1.8.0_181-amd64
 ```
 By default,HBase runs in standalone mode.Both standalone mode and pseudo-distributed mode are provided for the purposes of small-scale testing.For a production environment,distributed mode is advised.In distributed mode,multiple instance of HBase daemons run on multiple servers in the cluster.
 ```
-
-
 
 ### 2）搭建步骤
 

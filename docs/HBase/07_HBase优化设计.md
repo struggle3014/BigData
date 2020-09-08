@@ -1,8 +1,12 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
 
 本文介绍 HBase 常见的优化设计。
+
+***持续更新中~***
+
+
 
 # 目录
 
@@ -247,6 +251,8 @@ KeyValue 大小对写入性能的影响巨大，一旦遇到写入性能比较�
 
 该特性也是对 WAL 进行改造，当前WAL设计为一个 RegionServer 上所有 Region 共享一个 WAL，可以想象在写入吞吐量较高的时候必然存在资源竞争，降低整体性能。针对这个问题，社区小伙伴（阿里巴巴大神）提出 Multiple WALs 机制，管理员可以为每个 Namespace 下的所有表设置一个共享WAL，通过这种方式，写性能大约可以提升20%～40%左右。具体可以参考官方jira：https://issues.apache.org/jira/browse/HBASE-14457。
 
+
+
 ## 3 读表操作
 
 ### 1）scan 缓存设置是否合理？
@@ -360,6 +366,8 @@ Compaction 是将小文件合并为大文件，提高后续业务随机读性能
 优化建议：
 
 避免 Region 无故迁移，比如关闭自动 balance、RS 宕机及时拉起并迁回飘走的 Region 等；在业务低峰期执行major_compact 提升数据本地率。
+
+
 
 # 总结
 

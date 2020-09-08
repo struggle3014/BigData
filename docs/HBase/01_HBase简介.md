@@ -1,12 +1,38 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
 
 HBase 简介
 
+***持续更新中~***
+
+
+
 # 目录
 
-[TOC]
+<nav>
+<a href='#导读' style='text-decoration:none;font-weight:bolder'>导读</a><br/>
+<a href='#目录' style='text-decoration:none;font-weight:bolder'>目录</a><br/>
+<a href='#正文' style='text-decoration:none;font-weight:bolder'>正文</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1 关系型数据库与非关系型数据库' style='text-decoration:none;${border-style}'>1 关系型数据库与非关系型数据库</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1）关系型数据库' style='text-decoration:none;${border-style}'>1）关系型数据库</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2）非关系型数据库' style='text-decoration:none;${border-style}'>2）非关系型数据库</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2 HBase 简介' style='text-decoration:none;${border-style}'>2 HBase 简介</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3 HBase 数据模型' style='text-decoration:none;${border-style}'>3 HBase 数据模型</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1）Rowkey' style='text-decoration:none;${border-style}'>1）Rowkey</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2）Column Family & Qualifier' style='text-decoration:none;${border-style}'>2）Column Family & Qualifier</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3）TimeStamp' style='text-decoration:none;${border-style}'>3）TimeStamp</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4）Cell' style='text-decoration:none;${border-style}'>4）Cell</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4 HBase 架构' style='text-decoration:none;${border-style}'>4 HBase 架构</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1）角色介绍' style='text-decoration:none;${border-style}'>1）角色介绍</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2）RegionServer 组件介绍' style='text-decoration:none;${border-style}'>2）RegionServer 组件介绍</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3）注意' style='text-decoration:none;${border-style}'>3）注意</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5 HBase 读写流程' style='text-decoration:none;${border-style}'>5 HBase 读写流程</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1）读流程' style='text-decoration:none;${border-style}'>1）读流程</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2）写流程' style='text-decoration:none;${border-style}'>2）写流程</a><br/>
+<a href='#总结' style='text-decoration:none;font-weight:bolder'>总结</a><br/>
+<a href='#参考文献' style='text-decoration:none;font-weight:bolder'>参考文献</a><br/>
+</nav>
 
 # 正文
 
@@ -58,6 +84,8 @@ HBase 简介
 
 3，数据结构相对复杂，复杂查询方面稍欠。
 
+
+
 ## 2 HBase 简介
 
 Apache HBase 官网对 HBase 的介绍：
@@ -73,6 +101,8 @@ HBase 的全称是 Hadoop Database，是一个高可靠性，高性能，面向�
 主要用来存储非结构化和半结构化数据的松散数据（列存 NoSQL 数据库）。
 
 注意：NoSQL 的全称是 Not Only SQL，泛指非关系型数据库。
+
+
 
 ## 3 HBase 数据模型
 
@@ -119,6 +149,8 @@ HBase 的全称是 Hadoop Database，是一个高可靠性，高性能，面向�
 ​	1，由 {rowkey, column, version} 唯一确定的单元。
 
 ​	2，cell 中的数据是没有类型的，都是字节数组的形式存储。
+
+
 
 ## 4 HBase 架构
 
@@ -188,6 +220,8 @@ HBase 的全称是 Hadoop Database，是一个高可靠性，高性能，面向�
 
 <div align="center"><font size="2">HBase 架构</font></div>
 
+
+
 ## 5 HBase 读写流程
 
 ### 1）读流程
@@ -220,7 +254,11 @@ HBase 的全称是 Hadoop Database，是一个高可靠性，高性能，面向�
 
 6，频繁的溢写会导致产生很多小文件，因此会进行文件的合并，文件在合并的时候会有两种方式，即 Minor 和 Major。Minor 表示小范围文件的合并，Major 表示将所有 StoreFile 文件都合并成一个。
 
+
+
 # 总结
+
+
 
 
 

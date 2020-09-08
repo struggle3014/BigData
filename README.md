@@ -1,4 +1,4 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
 
@@ -17,13 +17,25 @@
 
 * 源泉活水篇
 
-会持续更新，记录成为更好的自己~
+**持续更新中~**
 
 
 
 # 目录
 
-[TOC]
+<nav>
+<a href='#导读' style='text-decoration:none;font-weight:bolder'>导读</a><br/>
+<a href='#目录' style='text-decoration:none;font-weight:bolder'>目录</a><br/>
+<a href='#正文' style='text-decoration:none;font-weight:bolder'>正文</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1 大数据基础篇' style='text-decoration:none;${border-style}'>1 大数据基础篇</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2 大数据框架篇' style='text-decoration:none;${border-style}'>2 大数据框架篇</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3 大数据实战篇' style='text-decoration:none;${border-style}'>3 大数据实战篇</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4 大数据探索篇' style='text-decoration:none;${border-style}'>4 大数据探索篇</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5 大数据架构篇' style='text-decoration:none;${border-style}'>5 大数据架构篇</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6 思维导图篇' style='text-decoration:none;${border-style}'>6 思维导图篇</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#7 源泉活水篇' style='text-decoration:none;${border-style}'>7 源泉活水篇</a><br/>
+<a href='#总结' style='text-decoration:none;font-weight:bolder'>总结</a><br/>
+</nav>
 
 # 正文
 
@@ -90,6 +102,7 @@
 | `HBase`                        | 博客 | 个人网站       | [范欣欣](http://hbasefly.com/category/hbase/)                | 擅长 `HBase` 设计原理及源码阅读                              |
 | 数据内核研究和开发，大数据存储 | 博客 | 个人网站       | [boyce](http://www.sysdb.cn/)                                |                                                              |
 | `HBase`                        | 文档 | `GitHub`       | [OpenInx](http://openinx.github.io/)                         | `HBase PMC & Committer`                                      |
+| HBase                          |      | iteye          | [HBase 探索](https://www.iteye.com/blog/user/zjushch)        |                                                              |
 | `Spark`                        | 文档 | `GitHub`       | [JerryLead](https://github.com/JerryLead/SparkInternals)     | `Spark` 内核，`Spark` 实现与原理                             |
 | `Kafka`                        | 博客 | 个人网站       | [郭俊 Jason](http://www.jasongj.com/tags/big-data/)          | `Kafka` 设计原理                                             |
 | 流式计算理论                   | 文档 | `oreilly `网站 | [Streaming 101:The world beyond batch](https://www.oreilly.com/radar/the-world-beyond-batch-streaming-101/)<br/>[Streaming 102:The world beyond batch](https://www.oreilly.com/radar/the-world-beyond-batch-streaming-102/) |                                                              |
@@ -100,8 +113,5 @@
 
 
 # 总结
-
-
-
 
 
