@@ -58,11 +58,11 @@
 
 ## 3 大数据实战篇
 
-| CDH                  | Spark 实战 | Flink 实战 |
-| -------------------- | ---------- | ---------- |
-| [CDH](./docs/CDH.md) |            |            |
+| CDH                      | Spark 实战 | Flink 实战 |
+| ------------------------ | ---------- | ---------- |
+| [CDH](./docs/CDH/CDH.md) |            |            |
 
-![](https://gitee.com/struggle3014/picBed/raw/master/CDH集群.png)
+![CDH集群思维导图](https://gitee.com/struggle3014/picBed/raw/master/CDH集群.png)
 
 <div align="center"><font size="2"><a href="./docs/MindMapping/CDH.xmind">CDH思维导图</a></font></div>
 
