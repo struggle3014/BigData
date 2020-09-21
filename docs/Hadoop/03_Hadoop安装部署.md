@@ -1,4 +1,4 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)#
+![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
 
 
 

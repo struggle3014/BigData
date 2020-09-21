@@ -2,22 +2,9 @@
 
 # 导读
 
-本文是大数据的导航页，记录自己的成长历程，主要从以下几方面介绍：
+本文是大数据的导航页，介绍大数据相关知识。
 
-* 大数据基础篇
-* 大数据框架篇
-
-* 大数据实战篇
-
-* 大数据探索篇
-
-* 大数据架构片
-
-* 思维导图篇
-
-* 源泉活水篇
-
-**持续更新中~**
+***持续更新中~***
 
 
 
@@ -41,17 +28,17 @@
 
 ## 1 大数据基础篇
 
-| `Java` | `JVM` | `NIO` | `Scala` | `分布式` | `RPC` | `Netty` | `Linux` | `多线程与并发` |
-| ------ | ----- | ----- | ------- | -------- | ----- | ------- | ------- | -------------- |
-|        |       |       |         |          |       |         |         |                |
+| Java | JVM  | NIO  | Scala | 分布式 | RPC  | Netty | Linux | 多线程与并发 |
+| ---- | ---- | ---- | ----- | ------ | ---- | ----- | ----- | ------------ |
+|      |      |      |       |        |      |       |       |              |
 
 
 
 ## 2 大数据框架篇
 
-| `Hadoop`                          | `HBase`                        | `Spark` | `Hive` | `Flink` | `Kafka` | `Zookeeper` | `Flume` |
-| --------------------------------- | ------------------------------ | ------- | ------ | ------- | ------- | ----------- | ------- |
-| [Hadoop](./docs/Hadoop/Hadoop.md) | [HBase](./docs/HBase/HBase.md) |         |        |         |         |             |         |
+| Hadoop                            | HBase                          | Spark                          | Hive | Flink | Kafka | Zookeeper | Flume | Solr                        |
+| --------------------------------- | ------------------------------ | ------------------------------ | ---- | ----- | ----- | --------- | ----- | --------------------------- |
+| [Hadoop](./docs/Hadoop/Hadoop.md) | [HBase](./docs/HBase/HBase.md) | [Spark](./docs/Spark/Spark.md) |      |       |       |           |       | [Solr](./docs/Solr/Solr.md) |
 
 ![Hadoop](https://gitee.com/struggle3014/picBed/raw/master/Hadoop.png)
 
@@ -61,13 +48,23 @@
 
 <div align="center"><font size="2"><a href="./docs/MindMapping/HBase.xmind">HBase思维导图</a></font></div>
 
+![Spark](https://gitee.com/struggle3014/picBed/raw/master/Spark.png)
+
+<div align="center"><font size="2"><a href="./docs/MindMapping/Spark.xmind">Spark思维导图</a></font></div>
+
+![Solr](https://gitee.com/struggle3014/picBed/raw/master/Solr.png)
+
+<div align="center"><font size="2"><a href="./docs/MindMapping/Solr.xmind">Solr思维导图</a></font></div>
+
 ## 3 大数据实战篇
 
-| Spark 实战 | Flink 实战 |
-| ---------- | ---------- |
-|            |            |
+| CDH                  | Spark 实战 | Flink 实战 |
+| -------------------- | ---------- | ---------- |
+| [CDH](./docs/CDH.md) |            |            |
 
+![](https://gitee.com/struggle3014/picBed/raw/master/CDH集群.png)
 
+<div align="center"><font size="2"><a href="./docs/MindMapping/CDH.xmind">CDH思维导图</a></font></div>
 
 ## 4 大数据探索篇
 
@@ -83,34 +80,15 @@
 | ---- | ---- | ---- | ---- |
 |      |      |      |      |
 
+![大数据架构师技能](https://gitee.com/struggle3014/picBed/raw/master/大数据架构师技能.png)
 
-
-## 6 思维导图篇
-
-| 文件                                                         | 样式                                                         |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [大数据架构师技能](./doc/MindMapping/大数据架构师技能.xmind) | ![大数据架构师技能](https://gitee.com/struggle3014/picBed/raw/master/大数据架构师技能.png) |
-
-
-
-
+<div align="center"><font size="2"><a href="./docs/MindMapping/大数据架构师技能.xmind"/>大数据架构师技能</a></font></div>
 
 ## 7 源泉活水篇
 
-| 擅长领域                       |      | 来源           | 用户                                                         | 备注                                                         |
-| ------------------------------ | ---- | -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `HBase`                        | 博客 | 个人网站       | [范欣欣](http://hbasefly.com/category/hbase/)                | 擅长 `HBase` 设计原理及源码阅读                              |
-| 数据内核研究和开发，大数据存储 | 博客 | 个人网站       | [boyce](http://www.sysdb.cn/)                                |                                                              |
-| `HBase`                        | 文档 | `GitHub`       | [OpenInx](http://openinx.github.io/)                         | `HBase PMC & Committer`                                      |
-| HBase                          |      | iteye          | [HBase 探索](https://www.iteye.com/blog/user/zjushch)        |                                                              |
-| `Spark`                        | 文档 | `GitHub`       | [JerryLead](https://github.com/JerryLead/SparkInternals)     | `Spark` 内核，`Spark` 实现与原理                             |
-| `Kafka`                        | 博客 | 个人网站       | [郭俊 Jason](http://www.jasongj.com/tags/big-data/)          | `Kafka` 设计原理                                             |
-| 流式计算理论                   | 文档 | `oreilly `网站 | [Streaming 101:The world beyond batch](https://www.oreilly.com/radar/the-world-beyond-batch-streaming-101/)<br/>[Streaming 102:The world beyond batch](https://www.oreilly.com/radar/the-world-beyond-batch-streaming-102/) |                                                              |
-| 大数据                         | 文档 | `GitHub`       | [heibaiying](https://github.com/heibaiying/BigData-Notes)    | 大数据入门指南                                               |
-|                                | 文档 | `GitHub`       | [wangzhiwubigdata](https://github.com/wangzhiwubigdata/God-Of-BigData) | 大数据入门                                                   |
-| 大数据                         | 书籍 | 阿里云         | [阿里巴巴大数据核心技术](https://developer.aliyun.com/article/745632?utm_content=g_1000104836&tt_from=weixin&utm_source=weixin&utm_medium=toutiao_ios&utm_campaign=client_share&wxshare_count=1&from=singlemessage&isappinstalled=0) | 《大数据工程师必读手册》<br>《阿里巴巴大数据及AI实战》<br>《领军行业大数据及AI实战》 |
+![大数据源泉活水](https://gitee.com/struggle3014/picBed/raw/master/大数据源泉活水.png)
 
-
+<div align="center"><font size="2"><a href="./docs/MindMapping/大数据源泉活水.xmind"/>大数据架构师技能</a>&nbsp<a href="./docs/大数据源泉活水.md">大数据源泉活水[MD]</a></font></div>
 
 # 总结
 

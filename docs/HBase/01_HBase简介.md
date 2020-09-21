@@ -176,9 +176,9 @@ HBase 的全称是 Hadoop Database，是一个高可靠性，高性能，面向�
 
 1，为 Region Server 分配 Region。
 
-2，负责 Region Server 的负载均衡
+2，负责 Region Server 的负载均衡。
 
-3，发现实现的 Region Server，并重新分配其上的 Region
+3，发现实现的 Region Server，并重新分配其上的 Region。
 
 4，管理用户对 table 的增删改查操作。
 
@@ -200,11 +200,11 @@ HBase 的全称是 Hadoop Database，是一个高可靠性，高性能，面向�
 
 #### Memsotre 和 StoreFile
 
-1，一个 Region 由多个 Store，一个 Store 对应一个 列族 CF。
+1，一个 Region 由多个 Store，一个 Store 对应一个列族 CF。
 
 2，Store 包括位于内存中的 memstore 和位于磁盘的 StoreFile 写操作先写入 Memstore，当 Memstore 中的数据达到某个阈值，HRegionServer 会启动 flashcash 线程写入 StoreFile，每次写入行程单独的一个 StoreFile。
 
-3，当 StoreFile 文件的数量增长到一定阈值后，系统会进行合并（minor 和 major），在合并过程中会进行版本合并和删除工作（major），行程更大的 StoreFile。
+3，当 StoreFile 文件的数量增长到一定阈值后，系统会进行合并（minor 和 major），在合并过程中会进行版本合并和删除工作（major），形成更大的 StoreFile。
 
 4，当某个 Region 所有 StoreFile 的大小和数量超过一定阈值后，会把当前的 Region 分割成两个，并由 HMaster 分配相应的 RegionServer 服务器，实现负载均衡。
 
@@ -248,7 +248,7 @@ HBase 的全称是 Hadoop Database，是一个高可靠性，高性能，面向�
 
 3，客户端访问具体 Region 所在的 RegionServer，找到对应的 Region 及 Store。
 
-4，开始写数据，写数据的时候会先向 HLog 中写一份数据（方便 MetaStore 中数据丢失后能够根据 HLog 恢复数据，向 HLog 中写数据的时候会优先写入内存，后台会有一个线程定期异步刷写数据到 HDFS，若 HLog 的数据也饿写入失败，那么数据也就丢失了）。
+4，开始写数据，写数据的时候会先向 HLog 中写一份数据（方便 MetaStore 中数据丢失后能够根据 HLog 恢复数据，向 HLog 中写数据的时候会优先写入内存，后台会有一个线程定期异步刷写数据到 HDFS，若 HLog 的数据也写入失败，那么数据也就丢失了）。
 
 5，HLog 写数据完成后，会先将数据写入到 MemStore，MemStore 默认大小是 64M，当 MemStore 满了之后会进行统一的溢写操作，将 MemStore 中的数据持久化到 HDFS 中。
 

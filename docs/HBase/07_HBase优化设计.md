@@ -116,7 +116,7 @@ HBase 中 row key 用来检索表中的记录，支持以下三种方式：
 
 3、与 Flush 操作一样，目前 HBase 的 Compaction 操作也是 Region 级别的，过多的列族也会产生不必要的 IO。					
 
-4、HDFS 其实对一个目录下的文件数有限制的（`dfs.namenode.fs-limits.max-directory-items`）。如果我们有 N 个列族，M 个 Region，那么我们持久化到 HDFS 至少会产生 N*M 个文件；而每个列族对应底层的 HFile 文件往往不止一个，我们假设为 K 个，那么最终表在 HDFS 目录下的文件数将是  N*M*K，这可能会操作 HDFS 的限制。
+4、HDFS 其实对一个目录下的文件数有限制的（`dfs.namenode.fs-limits.max-directory-items`）。如果我们有 N 个列族，M 个 Region，那么我们持久化到 HDFS 至少会产生 N\*M 个文件；而每个列族对应底层的 HFile 文件往往不止一个，我们假设为 K 个，那么最终表在 HDFS 目录下的文件数将是  N\*M\*K，这可能会操作 HDFS 的限制。
 
 ### 4）InMemory
 
@@ -147,31 +147,31 @@ StoreFile 是只读的，一旦创建后就不可以再修改。因此 HBase 的
 
 hbase 为了防止小文件（被刷到磁盘的 MemStore）过多，以保证保证查询效率，hbase 需要在必要的时候将这些小的 store file 合并成相对较大的 store file，这个过程就称之为 compaction。在  hbase中，主要存在两种类型的 compaction：minor  compaction和major compaction。
 
-1、minor compaction:的是较小、很少文件的合并。
+1、minor compaction:的功能是较小、很少文件的合并。
 
 minor compaction的运行机制要复杂一些，它由一下几个参数共同决定：
 
-hbase.hstore.compaction.min :默认值为 3，表示至少需要三个满足条件的store file时，minor compaction才会启动
+hbase.hstore.compaction.min :默认值为 3，表示至少需要三个满足条件的store file时，minor compaction 才会启动
 
-hbase.hstore.compaction.max 默认值为10，表示一次minor compaction中最多选取10个store file
+hbase.hstore.compaction.max 默认值为10，表示一次 minor compaction 中最多选取10个store file
 
-hbase.hstore.compaction.min.size 表示文件大小小于该值的store file 一定会加入到minor compaction的store file中
+hbase.hstore.compaction.min.size 表示文件大小小于该值的store file 一定会加入到 minor compaction 的 store file 中
 
-hbase.hstore.compaction.max.size 表示文件大小大于该值的store file 一定不会被添加到minor compaction
+hbase.hstore.compaction.max.size 表示文件大小大于该值的 store file 一定不会被添加到 minor compaction
 
 hbase.hstore.compaction.ratio ：将 StoreFile 按照文件年龄排序，minor compaction 总是从 older store file 开始选择，如果该文件的 size 小于后面 hbase.hstore.compaction.max 个 store file size 之和乘以 ratio 的值，那么该 store file 将加入到 minor compaction 中。如果满足 minor compaction 条件的文件数量大于 hbase.hstore.compaction.min，才会启动。
 
 2、major compaction 的功能是将所有的 store file 合并成一个，触发 major compaction的可能条件有：
 
-1）major_compact 命令、
+1）major_compact 命令
 
-2）majorCompact() API、
+2）majorCompact() API
 
 3）region server 自动运行
 
 （1）hbase.hregion.majorcompaction 默认为24 小时
 
-（2）hbase.hregion.majorcompaction.jetter 默认值为0.2 防止region server 在同一时间进行major compaction）。
+（2）hbase.hregion.majorcompaction.jetter 默认值为 0.2 防止region server 在同一时间进行major compaction）。
 
 hbase.hregion.majorcompaction.jetter 参数的作用是：对参数 hbase.hregion.majorcompaction 规定的值起到浮动的作用，假如两个参数都为默认值24和0,2，那么 major compact 最终使用的数值为：19.2~28.8 这个范围。
 
@@ -343,7 +343,7 @@ hbase.hstore.compaction.min 设置不能太大，默认是3个；设置需要根
 
 优化原理：
 
-Compaction 是将小文件合并为大文件，提高后续业务随机读性能，但是也会带来 IO 放大以及带宽消耗问题（数据远程读取以及三副本写入都会消耗系统带宽）。正常配置情况下 Minor Compaction 并不会带来很大的系统资源消耗，除非因为配置不合理导致 Minor Compaction 太过频繁，或者Region设置太大情况下发生 Major Compaction。
+Compaction 是将小文件合并为大文件，提高后续业务随机读性能，但是也会带来 IO 放大以及带宽消耗问题（数据远程读取以及三副本写入都会消耗系统带宽）。正常配置情况下 Minor Compaction 并不会带来很大的系统资源消耗，除非因为配置不合理导致 Minor Compaction 太过频繁，或者 Region 设置太大情况下发生 Major Compaction。
 
 观察确认：
 
