@@ -17,7 +17,41 @@
 
 # 目录
 
-[TOC]
+<nav>
+<a href='#导读' style='text-decoration:none;font-weight:bolder'>导读</a><br/>
+<a href='#目录' style='text-decoration:none;font-weight:bolder'>目录</a><br/>
+<a href='#正文' style='text-decoration:none;font-weight:bolder'>正文</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1 Spark 开发优化' style='text-decoration:none;${border-style}'>1 Spark 开发优化</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.1 调优概述' style='text-decoration:none;${border-style}'>1.1 调优概述</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='# 1.2 避免创建重复 RDD' style='text-decoration:none;${border-style}'> 1.2 避免创建重复 RDD</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.3 尽可能复用同一 RDD' style='text-decoration:none;${border-style}'>1.3 尽可能复用同一 RDD</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.4 对多次使用的 RDD 进行持久化' style='text-decoration:none;${border-style}'>1.4 对多次使用的 RDD 进行持久化</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.5 尽量避免使用 Shuffle 类算子' style='text-decoration:none;${border-style}'>1.5 尽量避免使用 Shuffle 类算子</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.6 使用 map-side 预聚合的 shuffle 操作' style='text-decoration:none;${border-style}'>1.6 使用 map-side 预聚合的 shuffle 操作</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.7 使用高性能算子' style='text-decoration:none;${border-style}'>1.7 使用高性能算子</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.8 广播大变量' style='text-decoration:none;${border-style}'>1.8 广播大变量</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.9 使用 Kryo 优化序列化性能' style='text-decoration:none;${border-style}'>1.9 使用 Kryo 优化序列化性能</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.10 优化数据结构' style='text-decoration:none;${border-style}'>1.10 优化数据结构</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2 资源调优' style='text-decoration:none;${border-style}'>2 资源调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.1 调优概述' style='text-decoration:none;${border-style}'>2.1 调优概述</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.2 Spark 作业基本运行原理' style='text-decoration:none;${border-style}'>2.2 Spark 作业基本运行原理</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.3 资源参数调优' style='text-decoration:none;${border-style}'>2.3 资源参数调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.4 资源参数调优参考示例' style='text-decoration:none;${border-style}'>2.4 资源参数调优参考示例</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3 数据倾斜调优' style='text-decoration:none;${border-style}'>3 数据倾斜调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.1 调优概述' style='text-decoration:none;${border-style}'>3.1 调优概述</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.2 数据倾斜发生时的现象' style='text-decoration:none;${border-style}'>3.2 数据倾斜发生时的现象</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.3 数据倾斜发生的原理' style='text-decoration:none;${border-style}'>3.3 数据倾斜发生的原理</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.4 如何定位导致数据倾斜的代码' style='text-decoration:none;${border-style}'>3.4 如何定位导致数据倾斜的代码</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.5 数据倾斜的解决方案' style='text-decoration:none;${border-style}'>3.5 数据倾斜的解决方案</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4 Shuffle 调优' style='text-decoration:none;${border-style}'>4 Shuffle 调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.1 调优概述' style='text-decoration:none;${border-style}'>4.1 调优概述</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.2 ShuffleManager 发展概述' style='text-decoration:none;${border-style}'>4.2 ShuffleManager 发展概述</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.3 HashShuffleManager 运行原理' style='text-decoration:none;${border-style}'>4.3 HashShuffleManager 运行原理</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.4 SortShuffleManager 运行原理' style='text-decoration:none;${border-style}'>4.4 SortShuffleManager 运行原理</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.5 shuffle 相关参数调优' style='text-decoration:none;${border-style}'>4.5 shuffle 相关参数调优</a><br/>
+<a href='#总结' style='text-decoration:none;font-weight:bolder'>总结</a><br/>
+<a href='#参考文献' style='text-decoration:none;font-weight:bolder'>参考文献</a><br/>
+</nav>
 
 # 正文
 

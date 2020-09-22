@@ -10,7 +10,27 @@
 
 # 目录
 
-[TOC]
+<nav>
+<a href='#导读' style='text-decoration:none;font-weight:bolder'>导读</a><br/>
+<a href='#目录' style='text-decoration:none;font-weight:bolder'>目录</a><br/>
+<a href='#正文' style='text-decoration:none;font-weight:bolder'>正文</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1 简介' style='text-decoration:none;${border-style}'>1 简介</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2 快速例子' style='text-decoration:none;${border-style}'>2 快速例子</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3 编程模型' style='text-decoration:none;${border-style}'>3 编程模型</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.1 基础概念' style='text-decoration:none;${border-style}'>3.1 基础概念</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.2 处理事件时间（event-time）和延迟数据' style='text-decoration:none;${border-style}'>3.2 处理事件时间（event-time）和延迟数据</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.3 容错语义' style='text-decoration:none;${border-style}'>3.3 容错语义</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4 使用 Datasets 和 DataFrame 的 API' style='text-decoration:none;${border-style}'>4 使用 Datasets 和 DataFrame 的 API</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.1 创建流式 DataFrames 和流式  Datasets' style='text-decoration:none;${border-style}'>4.1 创建流式 DataFrames 和流式  Datasets</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.2 流 DataFrames/Datasets 上的操作' style='text-decoration:none;${border-style}'>4.2 流 DataFrames/Datasets 上的操作</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.3 开始流式查询' style='text-decoration:none;${border-style}'>4.3 开始流式查询</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.4 管理流式查询' style='text-decoration:none;${border-style}'>4.4 管理流式查询</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.5 监视流式查询' style='text-decoration:none;${border-style}'>4.5 监视流式查询</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.6 使用检查点从故障中恢复' style='text-decoration:none;${border-style}'>4.6 使用检查点从故障中恢复</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.7 流式查询更改后的恢复语义' style='text-decoration:none;${border-style}'>4.7 流式查询更改后的恢复语义</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5 连续处理' style='text-decoration:none;${border-style}'>5 连续处理</a><br/>
+<a href='#参考文献' style='text-decoration:none;font-weight:bolder'>参考文献</a><br/>
+</nav>
 
 # 正文
 
