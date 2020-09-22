@@ -30,7 +30,7 @@
 
 ## 1 Cloudera Manager 简介
 
-![Hadoop 生态圈](https://gitee.com/struggle3014/picBed/raw/master/Hadoop 生态圈.png)
+![Hadoop生态圈](https://gitee.com/struggle3014/picBed/raw/master/Hadoop生态圈.png)
 
 ### 1.1 Cloudera Manager 介绍
 
