@@ -28,9 +28,17 @@
 
 ## 1 大数据基础篇
 
-| Java | JVM  | NIO  | Scala | 分布式 | RPC  | Netty | Linux | 多线程与并发 |
-| ---- | ---- | ---- | ----- | ------ | ---- | ----- | ----- | ------------ |
-|      |      |      |       |        |      |       |       |              |
+| Java | JVM                                                          | NIO  | Scala | 分布式 | RPC  | Netty | Linux | 多线程与并发                                                 |
+| ---- | ------------------------------------------------------------ | ---- | ----- | ------ | ---- | ----- | ----- | ------------------------------------------------------------ |
+|      | [JVM](https://github.com/struggle3014/SeriesBasicCapability/blob/master/docs/JVM/JVM.md) |      |       |        |      |       |       | [多线程与高并发](https://github.com/struggle3014/SeriesBasicCapability/blob/master/docs/多线程与高并发/多线程与高并发.md) |
+
+![JVM](https://gitee.com/struggle3014/picBed/raw/master/JVM.png)
+
+<div align="center"><font size="2"><a href="https://github.com/struggle3014/SeriesBasicCapability/blob/master/docs/MindMapping/JVM.xmind">JVM</a></font></div>
+
+![多线程与高并发_xmind](https://gitee.com/struggle3014/picBed/raw/master/多线程与高并发_xmind.png)
+
+<div align="center"><font size="2"><a href="https://github.com/struggle3014/SeriesBasicCapability/blob/master/docs/MindMapping/多线程与高并发.xmind">多线程与高并发</a></font></div>
 
 
 

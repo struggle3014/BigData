@@ -202,7 +202,7 @@ val rdd3 = rdd1.map(rdd2DataBroadcast...)
 
 #### 1.7.2 mapPartitions 替代 map
 
-mapPartitions 类的算子，一次函数调用会处理一个 partition 所有的数据，而不是一次函数调用处理一条，性能相对来说会高一些。但是有的时候，使用 mapPartitions 会出现 `OOM（内存溢出）`的问题。因为单次函数调用就要处理掉一个 partition 所有的数据，如果内存不够，垃圾回收时是无法回收掉太多对象的，很可能出现 OOM 异常。所以使用这类操作时要慎重！
+mapPartitions 类的算子，一次函数调用会处理一个 partition 所有的数据，而不是一次函数调用处理一条，性能相对来说会高一些。但是有的时候，使用 mapPartitions 会出现 OOM（内存溢出）的问题。因为单次函数调用就要处理掉一个 partition 所有的数据，如果内存不够，垃圾回收时是无法回收掉太多对象的，很可能出现 OOM 异常。所以使用这类操作时要慎重！
 
 
 
@@ -307,7 +307,7 @@ Spark 官网调优建议：在算子函数的代码中，不要使用上述三�
 
 #### 2.2.1 作业运行原理
 
-1. **启动 driver 进程。**使用 spark-submit 提交 Spark 作业后，该作业会启动对应的 driver 进程（根据`部署模式 deploy-mode` 的不同， driver 可能在本地，或在集群某个节点）。driver 会根据设定的参数占用一定数量的内存和 CPU core。
+1. **启动 driver 进程。**使用 spark-submit 提交 Spark 作业后，该作业会启动对应的 driver 进程（根据部署模式 deploy-mode 的不同， driver 可能在本地，或在集群某个节点）。driver 会根据设定的参数占用一定数量的内存和 CPU core。
 2.  **driver 进程向资源管理器申请资源。**driver 进程会向集群资源管理器申请 Spark 作业所需要的的资源（即 executor 进程）。
 3. **资源管理器为 executor 分配资源。**YARN 资源管理器会根据 Spark 作业设置的资源参数，在各工作节点上，启动一定数量的 executor 进程，每个 executor 进程占有一定数量的内存和 CPU core。
 4. **driver 为 executor 分配 task。**申请到作业执行所需资源后，driver 进程会调度和执行我们编写的作业代码。driver 进程会将编写的 Spark 作业拆分成多个 stage，每个 stage 执行一部分代码片段，并为每个 stage 创建一批 task，然后将这些 task 分配到各 executor 进程中执行。task 是最小的计算单元，负责执行一模一样的计算逻辑（用户编写的代码片段），只是每个 task 处理的数据不同。一个 stage 的所有 task 都执行完毕之后，会在各个本地的磁盘文件中写入中间结果，之后 driver 就会调度运行下一个 stage。而下一个 stage 的输入数据就是上一个 stage 的输出的中间结果。如此循环，直到完成用户编写的代码逻辑全部执行完，并计算完所有数据。得到结果。
@@ -1010,8 +1010,8 @@ SortShuffleManager 由于有一个磁盘文件 merge 的过程，因此大大减
 #### 4.5.8 spark.shuffle.consolidateFiles
 
 - 默认值：false
-- 参数说明：如果使用 HashShuffleManager，该参数有效。如果设置为 true，那么就会开启 consolidate 机制，会大幅度合并shuffle write的输出文件，对于shuffle read task数量特别多的情况下，这种方法可以极大地减少磁盘IO开销，提升性能。
-- 调优建议：如果的确不需要 SortShuffleManager 的排序机制，那么除了使用 bypass 机制，还可以尝试将 spark.shffle.manager 参数手动指定为 hash，使用 HashShuffleManager，同时开启 consolidate 机制。在实践中尝试过，发现其性能比开启了 bypass 机制的SortShuffleManager要高出 10%~30%。
+- 参数说明：如果使用 HashShuffleManager，该参数有效。如果设置为 true，那么就会开启 consolidate 机制，会大幅度合并shuffle write的输出文件，对于 shuffle read task 数量特别多的情况下，这种方法可以极大地减少磁盘IO开销，提升性能。
+- 调优建议：如果的确不需要 SortShuffleManager 的排序机制，那么除了使用 bypass 机制，还可以尝试将 spark.shffle.manager 参数手动指定为 hash，使用 HashShuffleManager，同时开启 consolidate 机制。在实践中尝试过，发现其性能比开启了 bypass 机制的 SortShuffleManager 要高出 10%~30%。
 
 
 
