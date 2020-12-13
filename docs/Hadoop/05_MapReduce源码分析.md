@@ -72,7 +72,7 @@ blockSize = file
 
 splitSize = Math.max(minSize, Math.min(maxSize, blockSize)); // 默认 split 大小等于 block 大小
 
-​	切片 split 是一个窗口机制：（调大 split 改小，调小 split 该大）
+​	切片 split 是一个窗口机制：（调大 split 改小，调小 split 改大）
 
 if(blkLocations[i].getOffset() <= offset < blkLocations[i].getOffset() + blkLocations[i].getLength())
 

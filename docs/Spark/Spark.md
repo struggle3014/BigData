@@ -81,37 +81,9 @@
 
 ## 6 [Spark 优化](./Spark优化.md)
 
-* Spark 开发优化
-  * 避免创建重复 RDD
-  * 极可能复用同一 RDD
-  * 对多次使用的 RDD 进行持久化
-  * 尽量避免使用 Shuffle 操作
-  * 使用 map-side 预聚合的 Shuffle 操作
-  * 使用高性能算子
-  * 广播大便量
-  * 使用 Kryo 优化序列化性能
-  * 优化数据结构
-* 资源调优
-  * Spark 作业基本运行原理
-  * 资源参数调优
-* 数据倾斜调优
-  * 数据倾斜发生时的现象
-  * 数据倾斜发生的原理
-  * 定位导致数据倾斜的代码
-  * 数据倾斜的方案
-    * 使用 Hive ETL 预处理数据
-    * 过滤少数导致倾斜的 key
-    * 提高 shuffle 操作的并行度
-    * 两阶段操作（局部聚合+全局聚合）
-    * 将 reduce join 转为 map join
-    * 采用倾斜 key 并分拆 join 操作
-    * 使用随机前缀和扩容 RDD 进行 join
-    * 多种方案组合使用
-* Shuffle 调优
-  * ShuffleManager 发展概述
-  * HashShuffleManager 运行原理
-  * SortShuffleManager 运行原理
-  * Shuffle 相关参数调优
+![Spark调优](https://gitee.com/struggle3014/picBed/raw/master/Spark调优.png)
+
+<div align="center"><font size="2"><a href="../MindMapping/Spark调优.xmind"/>Spark调优</a></font></div>
 
 
 

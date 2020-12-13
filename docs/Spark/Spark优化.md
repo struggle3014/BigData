@@ -4,10 +4,12 @@
 
 在大数据计算领域，Spark 变得越来越流行。使用 Spark 的初衷就是能够解决大数据计算作业快速、高效执行的问题。但是需要使用 Spark 开发高性能的作业，并不那么容易。
 
-本文参考了美团技术团队 Spark 性能优化指南及 CSDN 相关的博客，对 Spark 优化部分的内容做下总结。主要从以下几个方面进行阐述，多个部分之间可能有重合的部分。包括：
+本文参考了美团技术团队 Spark 性能优化指南及官网优化指南，对 Spark 优化部分的内容做下总结。主要从以下几个方面进行阐述，多个部分之间可能有重合的部分。包括：
 
 * 开发调优
 * 资源调优
+* 并行度
+* 数据本地化调优
 * 数据倾斜调优
 * Shuffle 优化
 
@@ -29,29 +31,74 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.5 尽量避免使用 Shuffle 类算子' style='text-decoration:none;${border-style}'>1.5 尽量避免使用 Shuffle 类算子</a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.6 使用 map-side 预聚合的 shuffle 操作' style='text-decoration:none;${border-style}'>1.6 使用 map-side 预聚合的 shuffle 操作</a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.7 使用高性能算子' style='text-decoration:none;${border-style}'>1.7 使用高性能算子</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.7.1 reduceByKey/aggregateByKey 替代 groupByKey' style='text-decoration:none;${border-style}'>1.7.1 reduceByKey/aggregateByKey 替代 groupByKey</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.7.2 mapPartitions 替代 map' style='text-decoration:none;${border-style}'>1.7.2 mapPartitions 替代 map</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.7.3 foreachPartitions 替代 foreach' style='text-decoration:none;${border-style}'>1.7.3 foreachPartitions 替代 foreach</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.7.4 使用 filter 之后进行 coalesce 操作' style='text-decoration:none;${border-style}'>1.7.4 使用 filter 之后进行 coalesce 操作</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.7.4 repartitionAndSortWithinPartitions 替代 repartition 和 sort 类操作' style='text-decoration:none;${border-style}'>1.7.4 repartitionAndSortWithinPartitions 替代 repartition 和 sort 类操作</a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.8 广播大变量' style='text-decoration:none;${border-style}'>1.8 广播大变量</a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.9 使用 Kryo 优化序列化性能' style='text-decoration:none;${border-style}'>1.9 使用 Kryo 优化序列化性能</a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#1.10 优化数据结构' style='text-decoration:none;${border-style}'>1.10 优化数据结构</a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href='#2 资源调优' style='text-decoration:none;${border-style}'>2 资源调优</a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.1 调优概述' style='text-decoration:none;${border-style}'>2.1 调优概述</a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.2 Spark 作业基本运行原理' style='text-decoration:none;${border-style}'>2.2 Spark 作业基本运行原理</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.2.1 作业运行原理' style='text-decoration:none;${border-style}'>2.2.1 作业运行原理</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.2.2 说明' style='text-decoration:none;${border-style}'>2.2.2 说明</a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.3 资源参数调优' style='text-decoration:none;${border-style}'>2.3 资源参数调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.3.1 num-executors' style='text-decoration:none;${border-style}'>2.3.1 num-executors</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.3.2 executor-memory' style='text-decoration:none;${border-style}'>2.3.2 executor-memory</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.3.3 executor-cores' style='text-decoration:none;${border-style}'>2.3.3 executor-cores</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.3.4 driver-memory' style='text-decoration:none;${border-style}'>2.3.4 driver-memory</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.3.5 spark.default.parallelism' style='text-decoration:none;${border-style}'>2.3.5 spark.default.parallelism</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.3.6 spark.storage.memoryFraction' style='text-decoration:none;${border-style}'>2.3.6 spark.storage.memoryFraction</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.3.7 spark.shuffle.memoryFraction' style='text-decoration:none;${border-style}'>2.3.7 spark.shuffle.memoryFraction</a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#2.4 资源参数调优参考示例' style='text-decoration:none;${border-style}'>2.4 资源参数调优参考示例</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3 数据倾斜调优' style='text-decoration:none;${border-style}'>3 数据倾斜调优</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.1 调优概述' style='text-decoration:none;${border-style}'>3.1 调优概述</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.2 数据倾斜发生时的现象' style='text-decoration:none;${border-style}'>3.2 数据倾斜发生时的现象</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.3 数据倾斜发生的原理' style='text-decoration:none;${border-style}'>3.3 数据倾斜发生的原理</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.4 如何定位导致数据倾斜的代码' style='text-decoration:none;${border-style}'>3.4 如何定位导致数据倾斜的代码</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.5 数据倾斜的解决方案' style='text-decoration:none;${border-style}'>3.5 数据倾斜的解决方案</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4 Shuffle 调优' style='text-decoration:none;${border-style}'>4 Shuffle 调优</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.1 调优概述' style='text-decoration:none;${border-style}'>4.1 调优概述</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.2 ShuffleManager 发展概述' style='text-decoration:none;${border-style}'>4.2 ShuffleManager 发展概述</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.3 HashShuffleManager 运行原理' style='text-decoration:none;${border-style}'>4.3 HashShuffleManager 运行原理</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.4 SortShuffleManager 运行原理' style='text-decoration:none;${border-style}'>4.4 SortShuffleManager 运行原理</a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.5 shuffle 相关参数调优' style='text-decoration:none;${border-style}'>4.5 shuffle 相关参数调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3 并行度调优' style='text-decoration:none;${border-style}'>3 并行度调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.1 并行度调优概述' style='text-decoration:none;${border-style}'>3.1 并行度调优概述</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.2 并行度调优原理' style='text-decoration:none;${border-style}'>3.2 并行度调优原理</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#3.3 并行度调优常用方案' style='text-decoration:none;${border-style}'>3.3 并行度调优常用方案</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4 数据本地化调优' style='text-decoration:none;${border-style}'>4 数据本地化调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.1 本地化级别' style='text-decoration:none;${border-style}'>4.1 本地化级别</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#4.2 本地化过程' style='text-decoration:none;${border-style}'>4.2 本地化过程</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5 数据倾斜调优' style='text-decoration:none;${border-style}'>5 数据倾斜调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.1 调优概述' style='text-decoration:none;${border-style}'>5.1 调优概述</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.2 数据倾斜发生时的现象' style='text-decoration:none;${border-style}'>5.2 数据倾斜发生时的现象</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.3 数据倾斜发生的原理' style='text-decoration:none;${border-style}'>5.3 数据倾斜发生的原理</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.4 如何定位导致数据倾斜的代码' style='text-decoration:none;${border-style}'>5.4 如何定位导致数据倾斜的代码</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.4.1 某个 task 执行特别慢时' style='text-decoration:none;${border-style}'>5.4.1 某个 task 执行特别慢时</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.4.2 某个 task 内存溢出' style='text-decoration:none;${border-style}'>5.4.2 某个 task 内存溢出</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.4.3 查看导致数据倾斜的 key 的数据分布情况' style='text-decoration:none;${border-style}'>5.4.3 查看导致数据倾斜的 key 的数据分布情况</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.5 数据倾斜的解决方案' style='text-decoration:none;${border-style}'>5.5 数据倾斜的解决方案</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.5.1 使用 Hive ETL 预处理数据' style='text-decoration:none;${border-style}'>5.5.1 使用 Hive ETL 预处理数据</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.5.2 过滤少数导致倾斜的 key' style='text-decoration:none;${border-style}'>5.5.2 过滤少数导致倾斜的 key</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.5.3 提高 shuffle 操作的并行度' style='text-decoration:none;${border-style}'>5.5.3 提高 shuffle 操作的并行度</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.5.4 两阶段聚合（局部聚合+全局聚合）' style='text-decoration:none;${border-style}'>5.5.4 两阶段聚合（局部聚合+全局聚合）</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.5.5 将 reduce join 转为 map join' style='text-decoration:none;${border-style}'>5.5.5 将 reduce join 转为 map join</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.5.6 采样倾斜 key 并分拆 join 操作' style='text-decoration:none;${border-style}'>5.5.6 采样倾斜 key 并分拆 join 操作</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.5.7 使用随机前缀和扩容 RDD 进行 join' style='text-decoration:none;${border-style}'>5.5.7 使用随机前缀和扩容 RDD 进行 join</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#5.5.8 多种方案组合使用' style='text-decoration:none;${border-style}'>5.5.8 多种方案组合使用</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6 Shuffle 调优' style='text-decoration:none;${border-style}'>6 Shuffle 调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.1 调优概述' style='text-decoration:none;${border-style}'>6.1 调优概述</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.2 ShuffleManager 发展概述' style='text-decoration:none;${border-style}'>6.2 ShuffleManager 发展概述</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.3 HashShuffleManager 运行原理' style='text-decoration:none;${border-style}'>6.3 HashShuffleManager 运行原理</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.3.1 未经优化的 HashShuffleManager' style='text-decoration:none;${border-style}'>6.3.1 未经优化的 HashShuffleManager</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.3.2 优化后的 HashShufffleManager' style='text-decoration:none;${border-style}'>6.3.2 优化后的 HashShufffleManager</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.4 SortShuffleManager 运行原理' style='text-decoration:none;${border-style}'>6.4 SortShuffleManager 运行原理</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.4.1 普通运行机制' style='text-decoration:none;${border-style}'>6.4.1 普通运行机制</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.4.2 bypass 运行机制' style='text-decoration:none;${border-style}'>6.4.2 bypass 运行机制</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.5 shuffle 相关参数调优' style='text-decoration:none;${border-style}'>6.5 shuffle 相关参数调优</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.5.1 spark.shuffle.file.buffer' style='text-decoration:none;${border-style}'>6.5.1 spark.shuffle.file.buffer</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.5.2 spark.reducer.maxSizeInFlight' style='text-decoration:none;${border-style}'>6.5.2 spark.reducer.maxSizeInFlight</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.5.3 spark.shuffle.io.maxRetries' style='text-decoration:none;${border-style}'>6.5.3 spark.shuffle.io.maxRetries</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.5.4 spark.shuffle.io.retryWait' style='text-decoration:none;${border-style}'>6.5.4 spark.shuffle.io.retryWait</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.5.5 spark.shuffle.memoryFraction' style='text-decoration:none;${border-style}'>6.5.5 spark.shuffle.memoryFraction</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.5.6 spark.shuffle.manager' style='text-decoration:none;${border-style}'>6.5.6 spark.shuffle.manager</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.5.7 spark.shuffle.sort.bypassMergeThreshold' style='text-decoration:none;${border-style}'>6.5.7 spark.shuffle.sort.bypassMergeThreshold</a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#6.5.8 spark.shuffle.consolidateFiles' style='text-decoration:none;${border-style}'>6.5.8 spark.shuffle.consolidateFiles</a><br/>
 <a href='#总结' style='text-decoration:none;font-weight:bolder'>总结</a><br/>
 <a href='#参考文献' style='text-decoration:none;font-weight:bolder'>参考文献</a><br/>
 </nav>
+
 
 # 正文
 
@@ -59,19 +106,19 @@
 
 ### 1.1 调优概述
 
-Spark 性能优化的第一步，是需要在开发 Spark 作业的过程中注意和应用一些性能优化的基本原则。开发调优，是要让大家了解 Spark 基本开发原则，包括：RDD lineage 设计、算子的合理使用、特殊操作的优化等。在开发过程中，需要注意以上原则，并根据具体的业务及实际使用场景，将其灵活地运用到 Spark
+Spark 性能优化的第一步，是需要在开发 Spark 作业的过程中注意和应用一些性能优化的基本原则。开发调优，是要让大家了解 Spark 基本开发原则，包括：RDD lineage 设计、算子的合理使用、特殊操作的优化等。在开发过程中，需要注意以上原则，并根据具体的业务及实际使用场景，将其灵活地运用到 Spark。
 
 ###  1.2 避免创建重复 RDD
 
 对于同一份数据，只应该创建一个 RDD，不能创建多个 RDD 来代表同一份数据。
 
-对于 Spark 初学者刚开始开发 Spark 作业或有经验的工程师开发 RDD lineage 极其冗长时，忘记之前对于某一份数据已经创建过一个 RDD。如果创建了重复地 RDD，那么Spark 作业会及逆行多次重复计算来创建代表相同数据的 RDD，进而增加了作业的性能开销。
+对于 Spark 初学者刚开始开发 Spark 作业或有经验的工程师开发 RDD lineage 极其冗长时，忘记之前对于某一份数据已经创建过一个 RDD。如果创建了重复地 RDD，那么 Spark 作业会及逆行多次重复计算来创建代表相同数据的 RDD，进而增加了作业的性能开销。
 
 
 
 ### 1.3 尽可能复用同一 RDD
 
-在对不同的数据执行算子操作时还要尽可能地复用一个 RDD 。比如说，有一个 RDD 的数据格式是 key-value 类型的，另一个是单value类型的，这两个 RDD 的 value 数据是完全一样的。那么此时我们可以只使用 key-value 类型的那个 RDD，因为其中已经包含了另一个的数据。对于类似这种多个RDD的数据有**重叠**或者**包含**的情况，我们应该尽量复用一个 RDD，这样可以尽可能地减少 RDD 的数量，从而尽可能减少算子执行的次数。
+在对不同的数据执行算子操作时还要尽可能地复用一个 RDD 。比如说，有一个 RDD 的数据格式是 key-value 类型的，另一个是单 value 类型的，这两个 RDD 的 value 数据是完全一样的。那么此时我们可以只使用 key-value 类型的那个 RDD，因为其中已经包含了另一个的数据。对于类似这种多个RDD的数据有**重叠**或者**包含**的情况，我们应该尽量复用一个 RDD，这样可以尽可能地减少 RDD 的数量，从而尽可能减少算子执行的次数。
 
 ```scala
 // 错误的做法。
@@ -141,7 +188,7 @@ rdd1.reduce(...)
 
 可能的话，尽量避免使用 shuffle 类算子。因为在 Spark 作业中，shuffle 操作涉及磁盘 I/O，序列化和反序列化，网络 I/O，该过程最消耗性能。
 
-shuffle 过程会将集群中多个节点相同的 key 拉去到同一节点上，进行聚合操作或 Join 操作。常见的**聚合操作**和 **Join** 操作可以参考 [Spark Core 文档的 RDD 部分]()。
+shuffle 过程会将集群中多个节点相同的 key 拉去到同一节点上，进行聚合操作或 Join 操作。常见的**聚合操作**和 **Join** 操作可以参考 [Spark Core 文档的 RDD 部分](./SparkCore.md)。
 
 shuffle 过程：
 
@@ -180,7 +227,7 @@ val rdd3 = rdd1.map(rdd2DataBroadcast...)
 
 如果因为业务需要，**一定要使用shuffle操作，无法用 map 类的算子来替代**，那么尽量使用可以 **map-side 预聚合的算子**。
 
-**map-side 预聚合**是在每个节点本地对相同的 key 进行一次聚合操作，类似于 MapReduce 中的本地 combiner。map-side 预聚合之后，每个节点本地就只会有一条相同的 key，因为多条相同的 key 被聚合起来了。其他节点在拉去所有节点上的相同 key 时，会大大减少需要拉去的数据数量，从而也就减少了磁盘 I/O 及网络 I/O 的开销。
+**map-side 预聚合**是在每个节点本地对相同的 key 进行一次聚合操作，类似于 MapReduce 中的本地 combiner。map-side 预聚合之后，每个节点本地就只会有一条相同的 key，因为多条相同的 key 被聚合起来了。其他节点在拉去所有节点上的相同 key 时，会大大减少需要拉取的数据数量，从而也就减少了磁盘 I/O 及网络 I/O 的开销。
 
 **建议：**使用 reduceByKey 或 aggregateByKey 算子来替代 groupByKey 算子。因为 reduceByKey 和 aggregateByKey 算子都会在使用用户自定义的函数对每个节点本地的相同 key 进行预聚合。而 groupByKey 算子是不会进行预聚合的，全量数据会在集群的各个节点之间分发，传输，性能相对较差。
 
@@ -388,15 +435,111 @@ Spark 官网调优建议：在算子函数的代码中，不要使用上述三�
 
 
 
-## 3 数据倾斜调优
+## 3 并行度调优
 
-### 3.1 调优概述
+Spark作业资源配置合理的情况下，运行也很长，可能是由于不合理的并行度，导致不能充分利用资源，从而导致作业执行效率低。通常需要对并行度进行调优。
+
+### 3.1 并行度调优概述
+
+> 除非为每个算子操作设置足够高的并行度（parallelism）级别，否则集群将无法得到充分利用。Spark 会根据文件的大小（sizes）自动设置在每个文件上运行的 “map” 任务数量（尽管可以通过对 SparkContext.textFile 等进行可选的参数进行控制），对于分布式的 "reduce" 任务，例如 groupByKey 和 reduceByKey 等，它使用最大父 RDD 的分区数量作为其并行度。可以通过**传递并行度**作为第二个参数或**配置 spark.default.parallelism** 来**更改默认值**。一般，建议集群中每个 CPU 核分配 2-3 个任务。
+
+
+
+### 3.2 并行度调优原理
+
+官网中为什么建议将集群中的每个 CPU Core 分配 2-3 个 tasks？
+
+**充分利用集群资源，提高任务执行效率**。因为集群中核的性能有高有低，如果每个 Core 分配多个 tasks（每个 task 是以线程的形式跑在 Executor 进程中），那么在相同的时间内高性能的 Core 可能已处理完分配给它的 tasks，而低性能的 Core 还未处理完分配给它的 tasks，此时可以由操作系统将未处理完的 tasks 调度给高性能 Core，充分发挥高性能核的特性，从而减少 stage 整体运行时间，进一步减少作业运行时间。
+
+
+
+### 3.3 并行度调优常用方案
+
+（1）**改变 HDFS 上文件的 Block 块数（不常用）**
+
+HDFS 默认情况下 split 和 block 块一一对应，而 split 与 RDD 中的 partition 对应，因此增加 block 块，可以提高并行度。
+
+（2）**创建 RDD 时指定分区数（map 任务阶段）**
+
+sc.textFile(path: String, minPartitions: Int = defaultMinPartitions)
+
+sc.parallelism(seq: Seq[T], numSlices: Int = defaultParallelism)
+
+（3）**使用 Shuffle 算子指定分区数（reduce 任务阶段）**
+
+reduceByKey(func, numPartitions: Int)
+
+join(other: RDD[(K, W)], numPartitions: Int)
+
+（4）**使用 coalesce 或 repartition 算子进行重分区**
+
+repartition(numPartitions) <=> coalesce(numPartitions, shuffle=true)
+
+（5）**参数设定**
+
+spark.default.parallelism：Spark默认并行度
+
+spark.sql.shuffle.partitions：Spark SQL shuffle 过程中默认的 partition 数
+
+
+
+## 4 数据本地化调优
+
+数据本地化对 Spark 作业的性能产生重大影响。如果数据和对其进行操作的代码在一起，那么计算速度很快。如果数据和代码分开，其中一个必须向另一个移动。通常，将序列化的代码从一处运送到另一处要比将数据块运送地更快，因为代码的大小比数据的大小要小得多。Spark 围绕数据本地化原则来构建调度。
+
+### 4.1 本地化级别
+
+**数据本地化是指数据与处理数据的代码（计算逻辑）之间的距离**。基于数据的当前位置，本地化级别从最近到最远：
+
+* **PROCESS_LOCAL** 数据和计算逻辑位于同一个 JVM 中。
+
+  ![PROCESS_LOCAL](https://gitee.com/struggle3014/picBed/raw/master/PROCESS_LOCAL.png)
+
+* **NODE_LOCAL** 数据和计算逻辑在同一个节点上。数据可能位于同一个节点的 HDFS 中，或在同一个节点的其他 Executor 进程中。比 PROCESS_LOCAL 稍微慢些，因为数据需要在进程间传输。
+
+  ![NODE_LOCAL](https://gitee.com/struggle3014/picBed/raw/master/NODE_LOCAL.png)
+
+* **NO_PREF** 从任何地方访问数据都同等快，没有本地化偏好。
+
+  ![NO_PREF](https://gitee.com/struggle3014/picBed/raw/master/NO_PREF.png)
+
+* **RACK_LOCAL** 数据和计算逻辑在同一个服务器机架上。数据和计算逻辑位于同一机架上的不同服务器，需要通过交换机在网络上传输。
+
+  ![RACK_LOCAL](https://gitee.com/struggle3014/picBed/raw/master/RACK_LOCAL.png)
+
+* **ANY** 数据在网络上的其他位置，和计算逻辑不在同一机架上。
+
+
+
+### 4.2 本地化过程
+
+Spark 倾向于在最佳本地化级别调度所有任务，但这并不总是可能的。在任何空闲的 Executor 上都没有未处理的数据情况下，Spark 将切换到较低级别的本地化。有两种选择：
+
+* 等待，直到繁忙的 CPU 空闲下来，在数据的所在服务器启动一个 task。
+* 立即在需将数据移动到那里的更远的地方启动一个新任务。
+
+Spark 通常是等待一段时间，希望繁忙的 CPU 空闲下来。一旦超时过期，它将数据从远处移动到空闲 CPU。每个本地化级别之间的回退等待超时时间可以单独配置或在单个参数中配置。如果任务耗时很长并且本地化级别差，应该增加参数所设置的等待时间，但通常默认配置能够很好地运行。
+
+| 配置                        | 默认值              | 含义                                                         |
+| --------------------------- | ------------------- | ------------------------------------------------------------ |
+| spark.locality.wait         | 3s                  | **放弃启动数据本地化任务之前的等待时长**，之后启动低一级别的数据本地化节点启动该任务。相同的等待将用于**单步执行多个本地级别**（PROCESS_LOCAL, NODE_LOCAL, RACK_LOCAL 然后 ANY），也可单独设置。如果任务很长，并且本地化级别很差，则应该增加该值。 |
+| spark.locality.wait.node    | spark.locality.wait | 自定义节点本地化（NODE_LOCAL）等待时长。                     |
+| spark.locality.wait.process | spark.locality.wait | 自定义进程本地化（PROCESS_LOCAL）等待时长。                  |
+| spark.locality.wait.rack    | spark.locality.wait | 自定义机架本地化（RACK_LOCAL）等待时长。                     |
+
+**Spark 调度时，TaskScheduler 在分发前，会依据数据的位置进行分发，尽可能使用最佳本地化级别调度任务**。如果在某个本地化级别调度任务失败超过5次，那么选择从该本地化级别的低一级别的本地化调度任务，重复上述过程，直到成功调度为止。![Spark 数据本地化调度流程](https://gitee.com/struggle3014/picBed/raw/master/Spark 数据本地化调度流程.png)
+
+
+
+## 5 数据倾斜调优
+
+### 5.1 调优概述
 
 我们在大数据计算中会遇到一个棘手的问题—数据倾斜，此时 Spark 作业的性能会比期望的差很多。
 
 
 
-### 3.2 数据倾斜发生时的现象
+### 5.2 数据倾斜发生时的现象
 
 数据倾斜发生的一般现象包括：
 
@@ -405,7 +548,7 @@ Spark 官网调优建议：在算子函数的代码中，不要使用上述三�
 
 
 
-### 3.3 数据倾斜发生的原理
+### 5.3 数据倾斜发生的原理
 
 在 shuffle 时过程中，必须将各个节点上相同的 key 拉取到某个节点上的一个 task 来进行操作，比如按 key 进行聚合或 join 操作。此时，如果某个 key 对应的数据量非常大，就会发生倾斜。
 
@@ -419,13 +562,13 @@ Spark 官网调优建议：在算子函数的代码中，不要使用上述三�
 
 
 
-### 3.4 如何定位导致数据倾斜的代码
+### 5.4 如何定位导致数据倾斜的代码
 
 数据倾斜只会发生在 shuffle 过程中。常用触发 shuffle 操作的算子：distinct， groupByKey，reduceByKey，aggregateByKey，join，cogroup，repartition 等。详见 [Spark Core 文档]()。
 
 
 
-#### 3.4.1 某个 task 执行特别慢时
+#### 5.4.1 某个 task 执行特别慢时
 
 1. **确定数据倾斜发生在第几个 stage 中。**
 
@@ -470,7 +613,7 @@ Spark 官网调优建议：在算子函数的代码中，不要使用上述三�
 
 
 
-#### 3.4.2 某个 task 内存溢出
+#### 5.4.2 某个 task 内存溢出
 
 这种情况下去定位出问题的代码就比较容易了。我们建议直接看 yarn-client 模式下本地log的异常栈，或者是通过 YARN 查看 yarn-cluster 模式下的 log 中的异常栈。一般来说，通过异常栈信息就可以定位到你的代码中哪一行发生了内存溢出。然后在那行代码附近找找，一般也会有 shuffle 类算子，此时很可能就是这个算子导致了数据倾斜。
 
@@ -478,7 +621,7 @@ Spark 官网调优建议：在算子函数的代码中，不要使用上述三�
 
 
 
-#### 3.4.3 查看导致数据倾斜的 key 的数据分布情况
+#### 5.4.3 查看导致数据倾斜的 key 的数据分布情况
 
 知道了数据倾斜发生在哪里之后，通常需要分析一下那个执行了 shuffle 操作并且导致了数据倾斜的 RDD/Hive表，查看一下其中 key 的分布情况。这主要是为之后选择哪一种技术方案提供依据。针对不同的 key 分布与不同的 shuffle 算子组合起来的各种情况，可能需要选择不同的技术方案来解决。
 
@@ -498,9 +641,9 @@ sampledWordCounts.foreach(println(_))
 
 
 
-### 3.5 数据倾斜的解决方案
+### 5.5 数据倾斜的解决方案
 
-#### 3.5.1 使用 Hive ETL 预处理数据
+#### 5.5.1 使用 Hive ETL 预处理数据
 
 **适用场景：**导致数据倾斜的是 Hive 表。如果该Hive表中的数据本身很不均匀（比如某个 key 对应了 100 万数据，其他 key 才对应了 10 条数据），而且业务场景需要频繁使用 Spark 对 Hive 表执行某个分析操作，那么比较适合使用这种技术方案。
 
@@ -516,7 +659,7 @@ sampledWordCounts.foreach(println(_))
 
 
 
-#### 3.5.2 过滤少数导致倾斜的 key
+#### 5.5.2 过滤少数导致倾斜的 key
 
 **适用场景：**如果发现导致倾斜的 key 就少数几个，而且对计算本身的影响并不大的话，那么很适合使用这种方案。比如 99% 的 key 就对应 10 条数据，但是只有一个 key 对应了100万数据，从而导致了数据倾斜。
 
@@ -532,7 +675,7 @@ sampledWordCounts.foreach(println(_))
 
 
 
-#### 3.5.3 提高 shuffle 操作的并行度
+#### 5.5.3 提高 shuffle 操作的并行度
 
 **适用场景：**如果我们必须要对数据倾斜迎难而上，那么建议优先使用这种方案，因为这是处理数据倾斜最简单的一种方案。
 
@@ -546,11 +689,11 @@ sampledWordCounts.foreach(println(_))
 
 **方案缺点：**只是缓解了数据倾斜而已，没有彻底根除问题，根据实践经验来看，其效果有限。
 
-**实践经验：**该方案通常无法彻底解决数据倾斜，因为如果出现一些极端情况，比如某个 key 对应的数据量有 100万，那么无论你的 task 数量增加到多少，这个对应着 100 万数据的 key 肯定还是会分配到一个 task 中去处理，因此注定还是会发生数据倾斜的。所以这种方案只能说是在发现数据倾斜时尝试使用的第一种手段，尝试去用嘴简单的方法缓解数据倾斜而已，或者是和其他方案结合起来使用。
+**实践经验：**该方案通常无法彻底解决数据倾斜，因为如果出现一些极端情况，比如某个 key 对应的数据量有 100万，那么无论你的 task 数量增加到多少，这个对应着 100 万数据的 key 肯定还是会分配到一个 task 中去处理，因此注定还是会发生数据倾斜的。所以这种方案只能说是在发现数据倾斜时尝试使用的第一种手段，尝试去用最简单的方法缓解数据倾斜而已，或者是和其他方案结合起来使用。
 
 
 
-#### 3.5.4 两阶段聚合（局部聚合+全局聚合）
+#### 5.5.4 两阶段聚合（局部聚合+全局聚合）
 
 **适用场景：**对 RDD 执行 reduceByKey 等聚合类 shuffle 算子或者在 Spark SQL 中使用 group by 语句进行分组聚合时，比较适用这种方案。
 
@@ -615,7 +758,7 @@ JavaPairRDD<Long, Long> globalAggrRdd = removedRandomPrefixRdd.reduceByKey(
 
 
 
-#### 3.5.5 将 reduce join 转为 map join
+#### 5.5.5 将 reduce join 转为 map join
 
 **适用场景：**在对 RDD 使用 join 类操作，或者是在 Spark SQL 中使用 join 语句时，而且 join 操作中的一个 RDD 或表的数据量比较小（比如几百M或者一两G），比较适用此方案。
 
@@ -669,7 +812,7 @@ JavaPairRDD<String, Tuple2<String, Row>> joinedRdd = rdd2.mapToPair(
 
 
 
-#### 3.5.6 采样倾斜 key 并分拆 join 操作
+#### 5.5.6 采样倾斜 key 并分拆 join 操作
 
 **适用场景：**两个 RDD/Hive 表进行 join 的时候，如果数据量都比较大，无法采用“解决方案五”，那么此时可以看一下两个 RDD/Hive 表中的 key 分布情况。如果出现数据倾斜，是因为其中某一个 RDD/Hive 表中的少数几个 key 的数据量过大，而另一个 RDD/Hive 表中的所有 key 都分布比较均匀，那么采用这个解决方案是比较合适的。
 
@@ -806,7 +949,7 @@ JavaPairRDD<Long, Tuple2<String, Row>> joinedRDD = joinedRDD1.union(joinedRDD2);
 
 
 
-#### 3.5.7 使用随机前缀和扩容 RDD 进行 join
+#### 5.5.7 使用随机前缀和扩容 RDD 进行 join
 
 **适用场景：**如果在进行 join 操作时，RDD 中有大量的 key 导致数据倾斜，那么进行分拆 key 也没什么意义，此时就只能使用最后一种方案来解决问题了。
 
@@ -860,21 +1003,21 @@ JavaPairRDD<String, Tuple2<String, Row>> joinedRDD = mappedRDD.join(expandedRDD)
 
 
 
-#### 3.5.8 多种方案组合使用
+#### 5.5.8 多种方案组合使用
 
 在实践中发现，很多情况下，如果只是处理较为简单的数据倾斜场景，那么使用上述方案中的某一种基本就可以解决。但是如果要处理一个较为复杂的数据倾斜场景，那么可能需要将多种方案组合起来使用。比如说，我们针对出现了多个数据倾斜环节的Spark作业，可以先运用解决方案一和二，预处理一部分数据，并过滤一部分数据来缓解；其次可以对某些shuffle操作提升并行度，优化其性能；最后还可以针对不同的聚合或join操作，选择一种方案来优化其性能。大家需要对这些方案的思路和原理都透彻理解之后，在实践中根据各种不同的情况，灵活运用多种方案，来解决自己的数据倾斜问题。
 
 
 
-## 4 Shuffle 调优
+## 6 Shuffle 调优
 
-### 4.1 调优概述
+### 6.1 调优概述
 
 大多数Spark作业的性能主要就是消耗在了 shuffle 环节，因为该环节包含了大量的磁盘 IO、序列化、网络数据传输等操作。因此，为了进一步提高作业的性能，需要对 shuffle 过程进行调优。**注意：shuffle 调优只是整个 Spark 性能调优中的一小部分，不要舍本逐末。**下面讲解 shuffle 的原理，及相关参数说明和各参数调优建议。
 
 
 
-### 4.2 ShuffleManager 发展概述
+### 6.2 ShuffleManager 发展概述
 
 在 Spark 的源码中，负责 shuffle 过程的执行、计算和处理的组件主要就是 ShuffleManager，也即 shuffle 管理器。而随着 Spark 的版本的发展，ShuffleManager 也在不断迭代，变得越来越先进。
 
@@ -884,9 +1027,9 @@ JavaPairRDD<String, Tuple2<String, Row>> joinedRDD = mappedRDD.join(expandedRDD)
 
 
 
-### 4.3 HashShuffleManager 运行原理
+### 6.3 HashShuffleManager 运行原理
 
-#### 4.3.1 未经优化的 HashShuffleManager
+#### 6.3.1 未经优化的 HashShuffleManager
 
 下图说明了未经优化的 HashShuffleManager 的原理。这里我们先明确一个假设前提：每个 executor 只有1个CPU core，也就是说，无论这个 executor 上分配多少个 task 线程，同一时间都只能执行一个 task 线程。
 
@@ -909,7 +1052,7 @@ JavaPairRDD<String, Tuple2<String, Row>> joinedRDD = mappedRDD.join(expandedRDD)
 
 
 
-#### 4.3.2 优化后的 HashShufffleManager
+#### 6.3.2 优化后的 HashShufffleManager
 
 下图说明了优化后的 HashShuffleManager 的原理。这里说的优化，是指我们可以设置一个参数，spark.shuffle.consolidateFiles。该参数默认值为 false，将其设置为 true 即可开启优化机制。通常来说，如果我们使用 HashShuffleManager，那么都建议开启这个选项。
 
@@ -923,11 +1066,11 @@ JavaPairRDD<String, Tuple2<String, Row>> joinedRDD = mappedRDD.join(expandedRDD)
 
 
 
-### 4.4 SortShuffleManager 运行原理
+### 6.4 SortShuffleManager 运行原理
 
 SortShuffleManager 的运行机制主要分成两种，一种是普通运行机制，另一种是 bypass 运行机制。当 shuffle read task 的数量小于等于 spark.shuffle.sort.bypassMergeThreshold 参数的值时（默认为200），就会启用 bypass 机制。
 
-#### 4.4.1 普通运行机制
+#### 6.4.1 普通运行机制
 
 下图说明了普通的 SortShuffleManager 的原理。在该模式下，数据会先写入一个内存数据结构中，此时根据不同的 shuffle 算子，可能选用不同的数据结构。如果是 reduceByKey 这种聚合类的 shuffle 算子，那么会选用 Map 数据结构，一边通过 Map 进行聚合，一边写入内存；如果是 join 这种普通的 shuffle 算子，那么会选用 Array 数据结构，直接写入内存。接着，每写一条数据进入内存数据结构之后，就会判断一下，是否达到了某个临界阈值。如果达到临界阈值的话，那么就会尝试将内存数据结构中的数据溢写到磁盘，然后清空内存数据结构。
 
@@ -935,11 +1078,11 @@ SortShuffleManager 的运行机制主要分成两种，一种是普通运行机�
 
 一个 task 将所有数据写入内存数据结构的过程中，会发生多次磁盘溢写操作，也就会产生多个临时文件。最后会将之前所有的临时磁盘文件都进行合并，这就是 merge 过程，此时会将之前所有临时磁盘文件中的数据读取出来，然后依次写入最终的磁盘文件之中。此外，由于一个 task 就只对应一个磁盘文件，也就意味着该 task 为下游stage 的 task 准备的数据都在这一个文件中，因此还会单独写一份索引文件，其中标识了下游各个 task 的数据在文件中的 start offset 与 end offset。
 
-SortShuffleManager 由于有一个磁盘文件 merge 的过程，因此大大减少了文件数量。比如第一个 stage 有50个task，总共有 10 个 executor，每个 executor 执行 5 个 task，而第二个 stage 有 100 个 task。由于每个 task 最终只有一个磁盘文件，因此此时每个 executor 上只有 5 个磁盘文件，所有 executor只有50个磁盘文件。
+SortShuffleManager 由于有一个磁盘文件 merge 的过程，因此大大减少了文件数量。比如第一个 stage 有 50个task，总共有 10 个 executor，每个 executor 执行 5 个 task，而第二个 stage 有 100 个 task。由于每个 task 最终只有一个磁盘文件，因此此时每个 executor 上只有 5 个磁盘文件，所有 executor只有50个磁盘文件。
 
 ![oridinary-sortShuffleManager](https://gitee.com/struggle3014/picBed/raw/master/oridinary-sortShuffleManager.png)
 
-#### 5.4.2 bypass 运行机制
+#### 6.4.2 bypass 运行机制
 
 下图说明了 bypass SortShuffleManager 的原理。bypass 运行机制的触发条件如下： 
 
@@ -959,45 +1102,45 @@ SortShuffleManager 由于有一个磁盘文件 merge 的过程，因此大大减
 
 ![bypass-sortShuffleManager](C:\Users\yue_zhou\Desktop\images\bypass-sortShuffleManager.png)
 
-### 4.5 shuffle 相关参数调优
+### 6.5 shuffle 相关参数调优
 
-#### 4.5.1 spark.shuffle.file.buffer
+#### 6.5.1 spark.shuffle.file.buffer
 
 - 默认值：32k
 - 参数说明：该参数用于设置 shuffle write task 的 BufferedOutputStream 的 buffer 缓冲大小。将数据写到磁盘文件之前，会先写入 buffer 缓冲中，待缓冲写满之后，才会溢写到磁盘。
 - 调优建议：如果作业可用的内存资源较为充足的话，可以适当增加这个参数的大小（比如64k），从而减少 shuffle write 过程中溢写磁盘文件的次数，也就可以减少磁盘 IO 次数，进而提升性能。在实践中发现，合理调节该参数，性能会有 1%~5% 的提升。
 
-#### 4.5.2 spark.reducer.maxSizeInFlight
+#### 6.5.2 spark.reducer.maxSizeInFlight
 
 - 默认值：48m
 - 参数说明：该参数用于设置 shuffle read task 的 buffer 缓冲大小，而这个 buffer 缓冲决定了每次能够拉取多少数据。
 - 调优建议：如果作业可用的内存资源较为充足的话，可以适当增加这个参数的大小（比如96m），从而减少拉取数据的次数，也就可以减少网络传输的次数，进而提升性能。在实践中发现，合理调节该参数，性能会有 1%~5% 的提升。
 
-#### 4.5.3 spark.shuffle.io.maxRetries
+#### 6.5.3 spark.shuffle.io.maxRetries
 
 - 默认值：3
 - 参数说明：shuffle read task 从 shuffle write task 所在节点拉取属于自己的数据时，如果因为网络异常导致拉取失败，是会自动进行重试的。该参数就代表了可以重试的最大次数。如果在指定次数之内拉取还是没有成功，就可能会导致作业执行失败。
 - 调优建议：对于那些包含了特别耗时的 shuffle 操作的作业，建议增加重试最大次数（比如60次），以避免由于 JVM 的 full gc 或者网络不稳定等因素导致的数据拉取失败。在实践中发现，对于针对超大数据量（数十亿~上百亿）的 shuffle 过程，调节该参数可以大幅度提升稳定性。
 
-#### 4.5.4 spark.shuffle.io.retryWait
+#### 6.5.4 spark.shuffle.io.retryWait
 
 - 默认值：5s
 - 参数说明：具体解释同上，该参数代表了每次重试拉取数据的等待间隔，默认是 5s。
 - 调优建议：建议加大间隔时长（比如60s），以增加 shuffle 操作的稳定性。
 
-#### 4.5.5 spark.shuffle.memoryFraction
+#### 6.5.5 spark.shuffle.memoryFraction
 
 - 默认值：0.2
 - 参数说明：该参数代表了 executor 内存中，分配给 shuffle read task 进行聚合操作的内存比例，默认是20%。
 - 调优建议：在资源参数调优中讲解过这个参数。如果内存充足，而且很少使用持久化操作，建议调高这个比例，给 shuffle read 的聚合操作更多内存，以避免由于内存不足导致聚合过程中频繁读写磁盘。在实践中发现，合理调节该参数可以将性能提升 10% 左右。
 
-#### 4.5.6 spark.shuffle.manager
+#### 6.5.6 spark.shuffle.manager
 
 - 默认值：sort
 - 参数说明：该参数用于设置 ShuffleManager 的类型。Spark 1.5 以后，有三个可选项：hash、sort和tungsten-sort。HashShuffleManager 是 Spark 1.2 以前的默认选项，但是 Spark 1.2 以及之后的版本默认都是 SortShuffleManager 了。tungsten-sort 与 sort 类似，但是使用了 tungsten 计划中的堆外内存管理机制，内存使用效率更高。
 - 调优建议：由于 SortShuffleManager 默认会对数据进行排序，因此如果你的业务逻辑中需要该排序机制的话，则使用默认的 SortShuffleManager 就可以；而如果你的业务逻辑不需要对数据进行排序，那么建议参考后面的几个参数调优，通过 bypass 机制或优化的 HashShuffleManager 来避免排序操作，同时提供较好的磁盘读写性能。这里要注意的是，tungsten-sort 要慎用，因为之前发现了一些相应的 bug。
 
-#### 4.5.7 spark.shuffle.sort.bypassMergeThreshold
+#### 6.5.7 spark.shuffle.sort.bypassMergeThreshold
 
 - 默认值：200
 
@@ -1007,7 +1150,7 @@ SortShuffleManager 由于有一个磁盘文件 merge 的过程，因此大大减
 
 
 
-#### 4.5.8 spark.shuffle.consolidateFiles
+#### 6.5.8 spark.shuffle.consolidateFiles
 
 - 默认值：false
 - 参数说明：如果使用 HashShuffleManager，该参数有效。如果设置为 true，那么就会开启 consolidate 机制，会大幅度合并shuffle write的输出文件，对于 shuffle read task 数量特别多的情况下，这种方法可以极大地减少磁盘IO开销，提升性能。
@@ -1025,8 +1168,10 @@ SortShuffleManager 由于有一个磁盘文件 merge 的过程，因此大大减
 
 # 参考文献
 
-[1] [Spark 官方文档—Tuning Spark](http://spark.apache.org/docs/latest/tuning.html)
+[1] [Spark 调优，官方文档](http://spark.apache.org/docs/latest/tuning.html)
 
-[2] [美团技术团队—Spark 性能优化指南基础篇](https://tech.meituan.com/2016/04/29/spark-tuning-basic.html)
+[2] [Spark SQL 调优指南，官方文档]()
 
-[3] [美团技术团队—Spark 性能优化指南高级篇](https://tech.meituan.com/2016/05/12/spark-tuning-pro.html)
+[3] [美团技术团队—Spark 性能优化指南基础篇](https://tech.meituan.com/2016/04/29/spark-tuning-basic.html)
+
+[4] [美团技术团队—Spark 性能优化指南高级篇](https://tech.meituan.com/2016/05/12/spark-tuning-pro.html)
