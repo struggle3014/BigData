@@ -235,7 +235,7 @@ val rdd3 = rdd1.map(rdd2DataBroadcast...)
 
 ![rdd-groupByKey](https://gitee.com/struggle3014/picBed/raw/master/rdd-groupByKey.png)
 
-![rdd-reduceByKey](C:\Users\yue_zhou\Desktop\images\rdd-reduceByKey.png)
+![rdd-reduceByKey](https://gitee.com/struggle3014/picBed/raw/master/rdd-reduceByKey.png)
 
 
 
@@ -361,7 +361,7 @@ Spark 官网调优建议：在算子函数的代码中，不要使用上述三�
 
 #### 2.2.2 说明
 
-* **shuffle 过程**。Spark 根据 shuffle 类算子进行 stage 划分。如果我们的代码中执行了某个 shuffle 类算子（详见 [Spark Core 文档 shuffle 部分]()），那么在该算子处，划分出一个 stage 界限。可以大致理解为：shuffle 算子执行之前的代码被划分到一个 stage，shuffle 算子执行及之后的代码被划分到下一个 stage。由于一个 stage 刚开始执行的时候，它的每个 task 都可能从上一个 stage 的 task 所在的节点，通过网络传输拉取需处理的所有 key，然后对拉取到的相同的 key 使用编写的算子函数执行聚合操作或连接操作。
+* **shuffle 过程**。Spark 根据 shuffle 类算子进行 stage 划分。如果我们的代码中执行了某个 shuffle 类算子（详见 [Spark Core 文档 shuffle 部分](./SparkCore.md)），那么在该算子处，划分出一个 stage 界限。可以大致理解为：shuffle 算子执行之前的代码被划分到一个 stage，shuffle 算子执行及之后的代码被划分到下一个 stage。由于一个 stage 刚开始执行的时候，它的每个 task 都可能从上一个 stage 的 task 所在的节点，通过网络传输拉取需处理的所有 key，然后对拉取到的相同的 key 使用编写的算子函数执行聚合操作或连接操作。
 
 * **持久化**。当代码中执行 cache/persist 等持久化操作时，会根据持久化级别，将每个 task 计算出的数据保存到 executor 进程的内存或所在节点的磁盘文件上。
 
@@ -386,12 +386,12 @@ Spark 官网调优建议：在算子函数的代码中，不要使用上述三�
 #### 2.3.2 executor-memory
 
 - *<font color="red">参数说明：</font>该参数用于设置每个Executor进程的内存。Executor内存的大小，很多时候直接决定了Spark作业的性能，而且跟常见的JVM OOM异常，也有直接的关联。*
-- *<font color="red">参数调优建议：</font>每个Executor进程的内存设置 4G~8G 较为合适。但是这只是一个参考值，具体的设置还是得根据不同部门的资源队列来定。可以看看自己团队的资源队列的最大内存限制是多少，num-executors乘以executor-memory，是不能超过队列的最大内存量的。此外，如果你是跟团队里其他人共享这个资源队列，那么申请的内存量最好不要超过资源队列最大总内存的1/3~1/2，避免你自己的 Spark 作业占用了队列所有的资源，导致别的同学的作业无法运行。*
+- *<font color="red">参数调优建议：</font>每个Executor进程的内存设置 4G\~8G 较为合适。但是这只是一个参考值，具体的设置还是得根据不同部门的资源队列来定。可以看看自己团队的资源队列的最大内存限制是多少，num-executors乘以executor-memory，是不能超过队列的最大内存量的。此外，如果你是跟团队里其他人共享这个资源队列，那么申请的内存量最好不要超过资源队列最大总内存的1/3~1/2，避免你自己的 Spark 作业占用了队列所有的资源，导致别的同学的作业无法运行。*
 
 #### 2.3.3 executor-cores
 
 - *<font color="red">参数说明：</font>该参数用于设置每个 executor进程的 CPU core数量。这个参数决定了每个Executor进程并行执行 task 线程的能力。因为每个 CPU core 同一时间只能执行一个 task 线程，因此每个 executor进程的 CPU core 数量越多，越能够快速地执行完分配给自己的所有 task 线程。*
-- *<font color="red">参数调优建议：</font>  executor 的  CPU core 数量设置为2~4个较为合适。同样得根据不同部门的资源队列来定，可以看看自己的资源队列的最大 CPU core 限制是多少，再依据设置的 executor数量，来决定每个  executor 进程可以分配到几个 CPU core。同样建议，如果是跟他人共享这个队列，那么 num-executors \* executor-cores 不要超过队列总 CPU core 的1/3~1/2左右比较合适，也是避免影响其他同学的作业运行。*
+- *<font color="red">参数调优建议：</font>  executor 的  CPU core 数量设置为2\~4个较为合适。同样得根据不同部门的资源队列来定，可以看看自己的资源队列的最大 CPU core 限制是多少，再依据设置的 executor数量，来决定每个  executor 进程可以分配到几个 CPU core。同样建议，如果是跟他人共享这个队列，那么 num-executors \* executor-cores 不要超过队列总 CPU core 的1/3~1/2左右比较合适，也是避免影响其他同学的作业运行。*
 
 #### 2.3.4 driver-memory
 
@@ -401,7 +401,7 @@ Spark 官网调优建议：在算子函数的代码中，不要使用上述三�
 #### 2.3.5 spark.default.parallelism
 
 - *<font color="red">参数说明：</font>该参数用于设置每个 stage 的默认 task 数量。这个参数极为重要，如果不设置可能会直接影响你的 Spark 作业性能。*
-- *<font color="red">参数调优建议：</font> Spark 作业的默认 task 数量为 500~1000 个较为合适。很多同学常犯的一个错误就是不去设置这个参数，那么此时就会导致 Spark 自己根据底层 HDFS 的  block 数量来设置task的数量，默认是一个 HDFS block 对应一个 task。通常来说，Spark 默认设置的数量是偏少的（比如就几十个 task），如果 task 数量偏少的话，就会导致你前面设置好的 executor 的参数都前功尽弃。试想一下，无论你的 executor 进程有多少个，内存和 CPU 有多大，但是 task 只有 1 个或者  10个，那么 90% 的 executor 进程可能根本就没有 task 执行，也就是白白浪费了资源！因此 Spark 官网建议的设置原则是，设置该参数为 num-executors \* executor-cores的2~3倍较为合适，比如 executor 的总 CPU core 数量为 300 个，那么设置 1000 个 task 是可以的，此时可以充分地利用 Spark 集群的资源。*
+- *<font color="red">参数调优建议：</font> Spark 作业的默认 task 数量为 500\~1000 个较为合适。很多同学常犯的一个错误就是不去设置这个参数，那么此时就会导致 Spark 自己根据底层 HDFS 的  block 数量来设置task的数量，默认是一个 HDFS block 对应一个 task。通常来说，Spark 默认设置的数量是偏少的（比如就几十个 task），如果 task 数量偏少的话，就会导致你前面设置好的 executor 的参数都前功尽弃。试想一下，无论你的 executor 进程有多少个，内存和 CPU 有多大，但是 task 只有 1 个或者  10个，那么 90% 的 executor 进程可能根本就没有 task 执行，也就是白白浪费了资源！因此 Spark 官网建议的设置原则是，设置该参数为 num-executors \* executor-cores的2~3倍较为合适，比如 executor 的总 CPU core 数量为 300 个，那么设置 1000 个 task 是可以的，此时可以充分地利用 Spark 集群的资源。*
 
 #### 2.3.6 spark.storage.memoryFraction
 
@@ -584,7 +584,7 @@ Spark 通常是等待一段时间，希望繁忙的 CPU 空闲下来。一旦超
 
      倒数第三列显示了每个 task 的运行时间。明显可以看到，有的 task 运行特别快，只需要几秒钟就可以运行完；而有的 task 运行特别慢，需要几分钟才能运行完，此时单从运行时间上看就已经能够确定发生数据倾斜了。此外，倒数第一列显示了每个 task 处理的数据量，明显可以看到，运行时间特别短的 task 只需要处理几百KB的数据即可，而运行时间特别长的 task 需要处理几千KB的数据，处理的数据量差了 10倍。此时更加能够确定是发生了数据倾斜。
 
-     ![spark-job-detail](C:\Users\yue_zhou\Desktop\images\spark-job-detail.png)
+     ![spark-data-skew](https://gitee.com/struggle3014/picBed/raw/master/spark-job-detail.png)
 
 2. **根据 stage 划分原理，推算发生倾斜的代码在那一部分。**
 
@@ -1098,9 +1098,7 @@ SortShuffleManager 由于有一个磁盘文件 merge 的过程，因此大大减
 * 第一，磁盘写机制不同；
 * 第二，不会进行排序。也就是说，启用该机制的最大好处在于，shuffle write过程中，不需要进行数据的排序操作，也就节省掉了这部分的性能开销。
 
-
-
-![bypass-sortShuffleManager](C:\Users\yue_zhou\Desktop\images\bypass-sortShuffleManager.png)
+![bypass-sortShuffleManager](https://gitee.com/struggle3014/picBed/raw/master/bypass-sortShuffleManager.png)
 
 ### 6.5 shuffle 相关参数调优
 
