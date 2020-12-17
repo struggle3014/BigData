@@ -87,7 +87,15 @@
 
 
 
-## 7 [超越批处理的流处理](./超越批处理的流处理.md)
+## 7 [Spark 算子](./Spark算子)
+
+![Spark算子](https://gitee.com/struggle3014/picBed/raw/master/Spark算子.png)
+
+<div align="center"><font size="2"><a href="../MindMapping/Spark算子.xmind"/>Spark算子</a></font></div>
+
+
+
+## 8 [超越批处理的流处理](./超越批处理的流处理.md)
 
 * 常见术语
   * 流是什么

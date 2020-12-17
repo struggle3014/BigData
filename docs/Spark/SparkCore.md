@@ -457,6 +457,34 @@ res0: Array[Int] = Array(1, 2, 3)
 
 
 
+在流计算中，我们需要实时查询 HBase 只能通过 HBase Client API。如果 HBase Connection 每条数据创建一次连接，效率太低，且对服务器压力较大，并且 ZK 连接数太多会影响服务。比较可行的方案是每个批次创建一个连接（类似 foreachPartitions 中每个分区创建一个连接，分区中的数据共享同一连接），但是该方案仍然会造成部分连接浪费，效率低下。
+
+理想的情况是流中所有批次、所有数据始终复用一个连接池。Spark 提供 Broadcast 功能可以实现该想法，只要创建 HBase Connection 广播出去，那么所有节点都可以复用。但真实运行代码时，发现 HBase Connection 不可序列化，无法进行广播...
+
+可以使用 Scala 中的 lazy 关键字绕个弯子实现：
+
+```scala
+class HBaseSink(zkHost: String, confFile: String) extends Serializable {
+    // 延迟加载特性
+    lazy val connnection = {
+        val hbaseConf = HBaseConfiguration.create()
+        hbaseConf.set(HConstant.ZOOKEEPER_QUORUM, zkHost)
+        hbaseConf.addResource(confFile)
+        val conn = ConnectionFactory.createConnection(hbaseConf)
+        sys.addShutdownHook {
+            conn.close()
+        }
+        conn
+    }
+}
+```
+
+在 Driver 程序中实例化该对象并广播，在各个节点中取广播变量的 value 进行使用。
+
+广播变量只有具体调用 value 时才会创建对象并 copy 到各个节点，而此时被序列化的是外层的 HBaseSink 对象，当在各个节点上具体调用 connectioin 进行操作时，Connection 才会在各个节点真正被创建，从而绕过 HBase Connection 无法序列化的情况。（同理可以推导 RedisSink、MySQLSink 等）
+
+
+
 ### 2.2 累机器
 
 累加器是只能通过 associative 和 commutative 操作 ”添加“ 的变量，因此可以有效地并行支持。它们可以用于实现计数器。Spark 本身支持数字类型的累加器，程序开源人员可以添加对新的类型的支持。
