@@ -527,9 +527,9 @@ Spark 通常是等待一段时间，希望繁忙的 CPU 空闲下来。一旦超
 | spark.locality.wait.process | spark.locality.wait | 自定义进程本地化（PROCESS_LOCAL）等待时长。                  |
 | spark.locality.wait.rack    | spark.locality.wait | 自定义机架本地化（RACK_LOCAL）等待时长。                     |
 
-**Spark 调度时，TaskScheduler 在分发前，会依据数据的位置进行分发，尽可能使用最佳本地化级别调度任务**。如果在某个本地化级别调度任务失败超过5次，那么选择从该本地化级别的低一级别的本地化调度任务，重复上述过程，直到成功调度为止。![Spark 数据本地化调度流程](https://gitee.com/struggle3014/picBed/raw/master/Spark 数据本地化调度流程.png)
+**Spark 调度时，TaskScheduler 在分发前，会依据数据的位置进行分发，尽可能使用最佳本地化级别调度任务**。如果在某个本地化级别调度任务失败超过5次，那么选择从该本地化级别的低一级别的本地化调度任务，重复上述过程，直到成功调度为止。![Spark 数据本地化调度流程](https://gitee.com/struggle3014/picBed/raw/master/Spark数据本地化调度流程.png)
 
-
+<div align="center"><font size="2">Spark数据本地化调优</font></div>
 
 ## 5 数据倾斜调优
 
