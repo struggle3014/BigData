@@ -564,7 +564,7 @@ Spark 通常是等待一段时间，希望繁忙的 CPU 空闲下来。一旦超
 
 ### 5.4 如何定位导致数据倾斜的代码
 
-数据倾斜只会发生在 shuffle 过程中。常用触发 shuffle 操作的算子：distinct， groupByKey，reduceByKey，aggregateByKey，join，cogroup，repartition 等。详见 [Spark Core 文档]()。
+数据倾斜只会发生在 shuffle 过程中。常用触发 shuffle 操作的算子：distinct， groupByKey，reduceByKey，aggregateByKey，join，cogroup，repartition 等。详见 [Spark Core 文档](./Spark优化.md)。
 
 
 
