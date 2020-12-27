@@ -1,4 +1,4 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
 
@@ -57,7 +57,7 @@ Hadoop HDFS 围绕 What, Why, How 展开
 
 * 不支持修改，支持追加数据
 
-![image-20200802133011774](https://gitee.com/struggle3014/picBed/raw/master/block-replication.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/block-replication.png"></div>
 
 <div align="center"><font size="2">HDFS 块的复制</font></div>
 
@@ -71,7 +71,7 @@ Hadoop HDFS 围绕 What, Why, How 展开
 * DataNode 和 NameNode 维持心跳，并汇报自己持有的 block 信息
 * Client 和 NameNode 交互文件元数据和 DataNode 交互文件 block 数据
 
-![HDFS-Architecture](https://gitee.com/struggle3014/picBed/raw/master/HDFS-Architecture.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/HDFS-Architecture.png"></div>
 
 <div align="center"><font size="2">HDFS 架构</font></div>
 
@@ -100,7 +100,7 @@ SecondaryNameNode（SNN）
 * 根据配置文件设置的时间间隔 fs.checkpoint.period，默认为 3600 秒
 * 根据配置文件设置 EditLog 大小 fs.checkpoint.size 规定 edits 文件的最大值，默认为 64M。
 
-![image-20200802140011354](https://gitee.com/struggle3014/picBed/raw/master/HDFS-SecondaryNameNode.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/HDFS-SecondaryNameNode.png"></div>
 
 <div align="center"><font size="2">HDFS-SencondaryNameNode 架构</font></div>
 
@@ -213,7 +213,7 @@ HDFS 依然会这么去做，主要是为了解决数据一致性问题。假设
 
 #### HDFS 写流程
 
-![HDFS写流程](https://gitee.com/struggle3014/picBed/raw/master/HDFS写流程.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/HDFS写流程.png"></div>
 
 <div align="center"><font size="2">HDFS 写流程</font></div>
 
@@ -237,7 +237,7 @@ HDFS 依然会这么去做，主要是为了解决数据一致性问题。假设
 
 #### HDFS 写流程
 
-![image-20200802141257212](https://gitee.com/struggle3014/picBed/raw/master/HDFS读流程.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/HDFS读流程.png"></div>
 
 <div align="center"><font size="2">HDFS 读流程</font></div>
 
@@ -287,7 +287,7 @@ HDFS 解决方案
 
 ##### CPA 原则（定理）
 
-![CAP原则](https://gitee.com/struggle3014/picBed/raw/master/CAP原则.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/CAP原则.png"></div>
 
 <div align="center"><font size="2">CAP 定理</font></div>
 
@@ -319,7 +319,7 @@ Paxos 算法是莱斯利.兰伯特于1990年提出的一种基于消息传递的
 
 * 过半通过可以中和一致性和可用性
 
-![无主态到主从态](https://gitee.com/struggle3014/picBed/raw/master/无主态到主从态.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/无主态到主从态.png"></div>
 
 <div align="center"><font size="2">无主状态->主从状态</font></div>
 
@@ -335,7 +335,7 @@ Paxos 算法是莱斯利.兰伯特于1990年提出的一种基于消息传递的
 
 #### HA 方案
 
-![image-20200802152002686](https://gitee.com/struggle3014/picBed/raw/master/HDFS-HA解决方案.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/HDFS-HA解决方案.png"></div>
 
 <div align="center"><font size="2">HDFS-HA 解决方案</font></div>
 
@@ -357,7 +357,7 @@ DN 同时向 NNs 汇报 block 清单
 
 ### HDFS-Federation 解决方案
 
-![image-20200802154802875](https://gitee.com/struggle3014/picBed/raw/master/HDFS-Federation.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/HDFS-Federation.png"></div>
 
 <div align="center"><font size="2">HDFS-Federation 解决方案</font></div>
 

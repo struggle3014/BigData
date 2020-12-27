@@ -1,5 +1,3 @@
-
-
 <div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
@@ -35,7 +33,7 @@
 * 关系型数据库与非关系型数据库
 * HBase 简介
 * HBase 数据模型
-* HBase 机构
+* HBase 架构
 * HBase 读写流程
 
 ## 2 [HBase 搭建](./02_HBase搭建.md)

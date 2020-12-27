@@ -1,12 +1,10 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
 
 源码分析不是为了能写出一个 MR 框架，而是为了更好地使用和更充分地理解框架。
 
-
-
-![MapReduce细粒度过程](https://gitee.com/struggle3014/picBed/raw/master/MapReduce细粒度过程.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/MapReduce细粒度过程.png"></div>
 
 <div align="center"><font size="2">MapReduce细粒度过程</font></div>
 
@@ -53,9 +51,13 @@
 Client 侧，没有计算发生。Client 支持了计算向数据移动和计算的并行度。
 
 1，Checking the input and output specifications of the job.
+
 2，Computing the InputSplits for the job.  // split  ->并行度和计算向数据移动就可以实现了
+
 3，Setup the requisite accounting information for the DistributedCache of the job, if necessary.
+
 4，Copying the job's jar and configuration to the map-reduce system directory on the distributed file-system.
+
 5，Submitting the job to the JobTracker and optionally monitoring it's status
 
 
@@ -92,7 +94,7 @@ split：解耦存储层和计算层
 
 input -> map -> output
 
-![MapTask核心流程](https://gitee.com/struggle3014/picBed/raw/master/MapTask核心流程.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/MapTask核心流程.png"></div>
 
 <div align="center"><font size="2">MapTask核心流程</font></div>
 
@@ -120,7 +122,7 @@ TextInputFormat -> LineRecordReader
 
 ​	getCurrentValue():
 
-![解决HDFS数据被分割到不同的blk问题](https://gitee.com/struggle3014/picBed/raw/master/解决HDFS数据被分割到不同的blk问题.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/解决HDFS数据被分割到不同的blk问题.png"></div>
 
 <div align="center"><font size="2">解决 HDFS 数据被分割到不同的 blk 问题</font></div>
 
@@ -130,7 +132,7 @@ TextInputFormat -> LineRecordReader
 
 ##### 环形缓冲区
 
-![MapReduce环形缓冲区](https://gitee.com/struggle3014/picBed/raw/master/MapReduce环形缓冲区.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/MapReduce环形缓冲区.png"></div>
 
 <div align="center"><font size="2">MR环形缓冲区</font></div>
 
@@ -178,7 +180,11 @@ NewOutputCollector
 
 input -> reduce -> output
 
-![image-20200806155850115](https://gitee.com/struggle3014/picBed/raw/master/ReduceTask核心流程.png)
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/ReduceTask核心流程.png"></div>
+
+<div align="center"><font size="2">ReduceTask核心流程</font></div>
+
+
 
 ### Reducer 的文档
 

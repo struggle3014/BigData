@@ -1,10 +1,12 @@
-![name_code](https://gitee.com/struggle3014/picBed/raw/master/name_code.png)
-
-
+<div align="center"><img src="https://gitee.com/struggle3014/picBed/raw/master/name_code.png"></div>
 
 # 导读
 
 本文介绍 Hadoop 安装部署具体内容。
+
+***持续更新中~***
+
+
 
 # 目录
 
